@@ -252,3 +252,21 @@ as
 begin 
 
 end
+
+go 
+
+create or alter procedure [Tempus].[spUpdateTaskContent]
+    @task_id int, @task_new_content nvarchar(512)
+as 
+begin 
+
+end
+
+go 
+
+create or alter procedure [Tempus].[spUpdateTaskSituation]
+    @task_id int, @task_new_situation nvarchar(128)
+as 
+begin 
+
+end
