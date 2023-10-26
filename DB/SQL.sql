@@ -82,10 +82,26 @@ create index ixTask on [Tempus].[Task]([task_id], [task_name], [task_category])
 create index ixComment on [Tempus].[Comment]([comment_id])
 
 /* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */
+/* -=-=-=-=-=-=-=-=-=-=-= VIEWS =-=-=-=-=-=-=-=-=-=- */
+create view [Tempus].[NumMembers]
+as
+begin 
+
+end 
+
+
+/* -=-=-=-=-=-=-=-=-=-= TRIGGERS -=-=-=-=-=-=-=-=-=- */
+
+
+
 
 go 
 
 /*=-=-=-=-=-=-=-=-=-=-=- STORED PROCEDURES -=-=-=-=-=-=-=-=-=-=-=*/
+
+
+
+
 
 /*=-=-=-=-=-=-=-=-=-=-=- CREATE PROCEDURES -=-=-=-=-=-=-=-=-=-=-=*/
 
@@ -305,4 +321,60 @@ create or alter procedure [Tempus].[spUpdateWorkspaceAdmin]
 as 
 begin 
 
+end
+
+go 
+
+create or alter procedure [Tempus].[spUpdateCategoryName]
+    @category_id int, @category_new_name nvarchar(255)
+as 
+begin 
+
+end
+
+go 
+
+create or alter procedure [Tempus].[spUpdateCategoryContent]
+    @category_id int, @category_new_content nvarchar(512)
+as 
+begin 
+
+end
+
+go 
+
+create or alter procedure [Tempus].[spUpdateTeamName]
+    @team_id int, @team_new_name nvarchar(128)
+as 
+begin 
+
+end
+
+go 
+
+create or alter procedure [Tempus].[spUpdateUserNickname]
+    @user_id int, @user_new_nickname nvarchar(128)
+as 
+begin 
+
+end
+
+go
+
+create or alter procedure [Tempus].[spUpdateUserEmail]
+    @user_id int, @user_new_email varchar(128)
+as 
+begin 
+
+end
+
+go
+
+/*=-=-=-=-=-=-=-=-=-=-=- OUTRO PROCEDURES -=-=-=-=-=-=-=-=-=-=-=*/
+create or alter procedure [Tempus].[spNumMembersTeam]
+    @team_id int, @num int output
+as
+begin 
+    select @num = count([user_id]) from [Tempus].[TeamMembers] where team_id = @team_id
+    return @num
 end
