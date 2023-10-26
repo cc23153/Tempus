@@ -270,3 +270,39 @@ as
 begin 
 
 end
+
+go 
+
+create or alter procedure [Tempus].[spUpdateWorkspaceName]
+    @workspace_id int, @workspace_new_name nvarchar(128)
+as 
+begin 
+
+end
+
+go 
+
+create or alter procedure [Tempus].[spUpdateWorkspaceDescription]
+    @workspace_id int, @workspace_new_description nvarchar(255)
+as 
+begin 
+
+end
+
+go
+
+create or alter procedure [Tempus].[spUpdateWorkspaceTeam]
+    @workspace_id int, @workspace_new_team int
+as 
+begin 
+
+end
+
+go
+
+create or alter procedure [Tempus].[spUpdateWorkspaceAdmin]
+    @workspace_id int, @workspace_new_admin int
+as 
+begin 
+
+end
