@@ -35,7 +35,7 @@ create table [Tempus].[Category]
 (
     [category_id] int primary key,
     [category_name] nvarchar(255) not null,
-    [category_content] nvarchar(512) null
+    [category_description] nvarchar(512) null
 )
 
 create table [Tempus].[Workspace]
@@ -96,7 +96,7 @@ create view [Tempus].[NumMembers]
 as
 begin
 
-    end 
+end 
 
 
 /* -=-=-=-=-=-=-=-=-=-= TRIGGERS -=-=-=-=-=-=-=-=-=- */
@@ -192,9 +192,7 @@ begin
     begin try
         if @workspace_id is null 
         begin
-        if not exists (select 1
-        from [Tempus].[Workspace]
-        where workspace_id = @workspace_id)
+        if not exists (select 1 from [Tempus].[Workspace] where workspace_id = @workspace_id)
             begin
             insert into [Tempus].[Workspace]
                 (workspace_name, workspace_description, team_id, workspace_admin)
@@ -224,11 +222,35 @@ go
 create or alter procedure [Tempus].[spNewCategory]
     @category_id int,
     @category_name nvarchar(255),
-    @category_content nvarchar(512)
+    @category_description nvarchar(512)
 as
 begin
-
+    if @category_id is null or @category_name is null or @category_description is null 
+    begin 
+        RAISERROR('Invalid parameters', 16, 1)
+        return
     end
+    begin try
+        begin transaction  
+        if exists (select 1 from [Tempus].[Category] where category_id = @category_id)
+        begin 
+            RAISERROR('Category already exists', 16, 1)
+            return    
+        end 
+        insert into [Tempus].[Category] values 
+            (@category_id, @category_name, @category_description)
+        commit
+    end try 
+
+    begin catch
+        rollback
+        declare @error_message nvarchar(2048)
+        set @error_message = 'Erro: '+Error_Message();
+        throw 51200, @error_message, 1  
+        return
+    end catch
+
+end
 
 go
 
@@ -237,16 +259,64 @@ create or alter procedure [Tempus].[spAddTeamMember]
     @user_id int
 as
 begin
-
+    if @team_id is null or @user_id is null 
+    begin 
+        RAISERROR('Invalid parameters', 16, 1)
+        return
+    end 
+    
+    if exists(SELECT 1 from [Tempus].[TeamMembers] where team_id = @team_id and user_id = @user_id)
+    begin 
+        RAISERROR('User is already a member', 16, 1)
+        return
     end
+
+    begin try 
+        insert into [Tempus].[TeamMembers] values 
+            (@team_id, @user_id)
+        return
+    end try 
+    begin catch 
+        declare @error_message nvarchar(2048)
+        set @error_message = 'Erro: '+Error_Message();
+        throw 51200, @error_message, 1 
+    end catch
+
+
+end
+
+go
 
 create or alter procedure [Tempus].[spNewTeam]
     @team_id int,
     @team_name int
 as
 begin
-
+    if @team_name is null 
+    begin 
+        RAISERROR('Invalid parameters', 16, 1)
+        return
     end 
+    if exists(SELECT 1 from [Tempus].[Team] where team_id = @team_id)
+    begin 
+        RAISERROR('Team already exists', 16, 1)
+        return
+    end
+    begin try 
+        begin transaction 
+        insert into [Tempus].[Team] values 
+            (@team_id, @team_name)
+        commit 
+    end try 
+
+    begin catch
+        rollback 
+        declare @error_message nvarchar(2048)
+        set @error_message = 'Erro: '+Error_Message();
+        throw 51200, @error_message, 1 
+    end catch
+
+end 
 
 GO
 
@@ -260,7 +330,7 @@ create or alter procedure [Tempus].[spNewUser]
 as
 begin
 
-    end
+end
  
 go
 
@@ -271,7 +341,7 @@ create or alter procedure [Tempus].[spDeleteTask]
 as
 begin
 
-    end
+end
 
 go
 
@@ -280,7 +350,7 @@ create or alter procedure [Tempus].[spDeleteComment]
 as
 begin
 
-    end 
+end 
 
 go
 
@@ -289,7 +359,7 @@ create or alter procedure [Tempus].[spDeleteWorkspace]
 as
 begin
 
-    end 
+end 
 
 go
 
@@ -298,7 +368,7 @@ create or alter procedure [Tempus].[spDeleteCategory]
 as
 begin
 
-    end 
+end 
 
 go
 
@@ -308,7 +378,7 @@ create or alter procedure [Tempus].[spRemoveTeamMember]
 as
 begin
 
-    end 
+end 
 
 go
 
@@ -317,7 +387,7 @@ create or alter procedure [Tempus].[spDeleteTeam]
 as
 begin
 
-    end 
+end 
 
 go
 
@@ -326,7 +396,7 @@ create or alter procedure [Tempus].[spDeleteUser]
 as
 begin
 
-    end 
+end 
 
 go
 
@@ -338,13 +408,13 @@ create or alter procedure [Tempus].[spUpdateTaskName]
 as
 begin
 
-    end
+end
 
 go
 
 create or alter procedure [Tempus].[spUpdateTaskContent]
     @task_id int,
-    @task_new_content nvarchar(512)
+    @task_new_description nvarchar(512)
 as
 begin
 
