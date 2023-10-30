@@ -321,7 +321,7 @@ end
 GO
 
 create or alter procedure [Tempus].[spNewUser]
-    @user_id int,
+    @user_id int = null,
     @username nvarchar(128),
     @nickname nvarchar(128),
     @email varchar(128),
@@ -329,6 +329,26 @@ create or alter procedure [Tempus].[spNewUser]
     @password_salt varchar(1000)
 as
 begin
+    if @username is null or @nickname is null or @email is null 
+    begin 
+        RAISERROR('Invalid parameters', 16, 1)
+        return
+    end 
+    begin try
+        if @user_id is null
+        begin
+            insert into [Tempus].[User](username, nickname, email) values (@username, @nickname, @email)
+            commit
+            return
+        end
+        insert into [Tempus].[User] values (@user_id, @username, @nickname, @email)
+    end try
+    begin catch
+        rollback 
+        declare @error_message nvarchar(2048)
+        set @error_message = 'Erro: '+Error_Message();
+        throw 51200, @error_message, 1 
+    end catch
 
 end
  
