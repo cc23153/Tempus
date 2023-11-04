@@ -238,6 +238,11 @@ begin
         raiserror('Task_id can''t be null', 16, 1)
         return
     end
+    if not exists (select 1 from [Tempus].[Task] where task_id = @task_id)
+    begin 
+        raiserror('The task doesn''t exist', 16, 1)
+        return
+    end
     begin try 
         begin transaction
         delete from [Tempus].[Task] where task_id = @task_id
@@ -262,6 +267,11 @@ begin
     if @comment_id is null 
     begin 
         raiserror('Comment_id can''t be null', 16, 1)
+        return
+    end
+    if not exists (select 1 from [Tempus].[Comment] where comment_id = @comment_id)
+    begin 
+        raiserror('The comment doesn''t exist', 16, 1)
         return
     end
     begin try 
@@ -289,6 +299,11 @@ begin
         raiserror('Workspace_id can''t be null', 16, 1)
         return
     end
+    if not exists (select 1 from [Tempus].[Workspace] where workspace_id = @workspace_id)
+    begin 
+        raiserror('The workspace doesn''t exist', 16, 1)
+        return
+    end
     begin try 
         begin transaction
         delete from [Tempus].[Workspace] where workspace_id = @workspace_id
@@ -312,6 +327,11 @@ begin
     if @category_id is null 
     begin 
         raiserror('Category_id can''t be null', 16, 1)
+        return
+    end
+    if not exists (select 1 from [Tempus].[Category] where category_id = @category_id)
+    begin 
+        raiserror('The category doesn''t exist', 16, 1)
         return
     end
     begin try 
@@ -340,6 +360,11 @@ begin
         raiserror('Invalid parameters', 16, 1)
         return
     end
+    if not exists (select 1 from [Tempus].[TeamMembers] where team_id = @team_id and user_id = @user_id)
+    begin 
+        raiserror('The user is not part of the team', 16, 1)
+        return
+    end
     begin try 
         begin transaction
         delete from [Tempus].[TeamMembers] where team_id = @team_id and user_id = @user_id
@@ -365,6 +390,11 @@ begin
         raiserror('Team_id can''t be null', 16, 1)
         return
     end
+    if not exists (select 1 from [Tempus].[Team] where team_id = @team_id)
+    begin 
+        raiserror('The team doesn''t exist', 16, 1)
+        return
+    end
     begin try 
         begin transaction
         delete from [Tempus].[Team] where team_id = @team_id
@@ -388,6 +418,11 @@ begin
     if @user_id is null 
     begin 
         raiserror('User_id can''t be null', 16, 1)
+        return
+    end
+    if not exists (select 1 from [Tempus].[User] where user_id = @user_id)
+    begin 
+        raiserror('The user doesn''t exist', 16, 1)
         return
     end
     begin try 
