@@ -792,6 +792,42 @@ end
 
 go
 
+create or alter procedure [Tempus].[spUpdateUsername]
+    @user_id int,
+    @user_new_username varchar(40)
+as
+begin
+    if @user_id is null or @user_new_username is null  
+    begin 
+        raiserror('Invalid parameters', 16, 1)
+        return
+    end
+    if not exists (select 1 from [Tempus].[User] where user_id = @user_id)
+    begin 
+        raiserror('The user doesn''t exist', 16, 1)
+        return
+    end
+    if exists (select 1 from [Tempus].[User] where username = @user_new_username and user_id != @user_id)
+    begin 
+        raiserror('The username is already taken', 16, 1)
+        return
+    end
+    begin try 
+        begin transaction
+        update [Tempus].[User] set username = @user_new_username where user_id = @user_id
+        commit
+    end try 
+
+    begin catch 
+        rollback 
+        declare @error_message nvarchar(2048)
+        set @error_message = 'Erro: '+Error_Message();
+        throw 51200, @error_message, 1  
+    end catch
+end
+
+go
+
 go 
 create or alter procedure [Tempus].[spUpdateUser]
     @user_id int,
