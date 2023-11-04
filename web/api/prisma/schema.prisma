@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  category_id          Int     @id(map: "PK__Category__D54EE9B44D8B09C6")
+  category_name        String  @db.NVarChar(50)
+  category_description String? @db.NVarChar(128)
+  Task                 Task[]
+}
+
+model Comment {
+  comment_id       Int      @id(map: "PK__Comment__E7957687AEE16ACD") @default(autoincrement())
+  task_id          Int
+  content          String   @db.NText
+  comment_datetime DateTime @db.DateTime
+  user_id          Int
+  Task             Task     @relation(fields: [task_id], references: [task_id], onUpdate: NoAction, map: "fk_task_id")
+  User             User     @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction, map: "fkUserId")
+}
+
+model Task {
+  task_id        Int       @id(map: "PK__Task__0492148DE92D48F6") @default(autoincrement())
+  task_name      String    @db.NVarChar(50)
+  task_content   String?   @db.NVarChar(512)
+  workspace_id   Int
+  task_situation String    @db.NVarChar(50)
+  task_begin     DateTime  @db.DateTime
+  task_end       DateTime  @db.DateTime
+  task_category  Int
+  Comment        Comment[]
+  Category       Category  @relation(fields: [task_category], references: [category_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_task_category")
+  Workspace      Workspace @relation(fields: [workspace_id], references: [workspace_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_workspace_id")
+}
+
+model Team {
+  team_id     Int           @id(map: "PK__Team__F82DEDBCAC188579") @default(autoincrement())
+  team_name   String        @db.NVarChar(50)
+  TeamMembers TeamMembers[]
+  Workspace   Workspace[]
+}
+
+model TeamMembers {
+  teammembers_id Int  @id(map: "PK__TeamMemb__009B24DFA1A0C471") @default(autoincrement())
+  team_id        Int
+  user_id        Int
+  Team           Team @relation(fields: [team_id], references: [team_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_team_id")
+  User           User @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user_id")
+}
+
+model User {
+  user_id           Int           @id(map: "PK__User__B9BE370F92593289") @default(autoincrement())
+  username          String        @unique(map: "UQ__User__F3DBC572C2DF5078") @db.NVarChar(40)
+  nickname          String        @db.NVarChar(40)
+  email             String        @unique(map: "UQ__User__AB6E61643E3B0FBB") @db.VarChar(128)
+  password_hash     String        @db.VarChar(64)
+  password_salt     String        @db.VarChar(64)
+  register_datetime DateTime      @db.DateTime
+  Comment           Comment[]
+  TeamMembers       TeamMembers[]
+  Workspace         Workspace[]
+}
+
+model Workspace {
+  workspace_id          Int    @id(map: "PK__Workspac__7C58AC0BF55D8C8E") @default(autoincrement())
+  workspace_name        String @db.NVarChar(50)
+  workspace_description String @db.NVarChar(128)
+  team_id               Int
+  workspace_admin       Int
+  Task                  Task[]
+  User                  User   @relation(fields: [workspace_admin], references: [user_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_workspace_admin")
+  Team                  Team   @relation(fields: [team_id], references: [team_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_workspace_team_id")
+}
