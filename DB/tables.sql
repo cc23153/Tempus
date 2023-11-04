@@ -29,7 +29,7 @@ create table [Tempus].[TeamMembers](
 )
 
 create table [Tempus].[Category](
-    [category_id] int primary key,
+    [category_id] int identity primary key,
     [category_name] nvarchar(50) not null,
     [category_description] nvarchar(128) null
 )
