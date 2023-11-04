@@ -33,4 +33,3 @@ begin
     delete from [Tempus].[Task] where task_id = @task_id
 end
 
-select * from Empresa2.V_Onde_Trabalha where sobrenome = 'Wong'

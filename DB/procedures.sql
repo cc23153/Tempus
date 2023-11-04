@@ -1,24 +1,26 @@
 /*=-=-=-=-=-=-=-=-=-=-=- CREATE PROCEDURES -=-=-=-=-=-=-=-=-=-=-=*/
 
 create or alter procedure [Tempus].[spNewTask]
-    @task_name nvarchar(255),
+    @task_name nvarchar(50),
     @task_content nvarchar(512),
     @workspace_id int,
-    @task_situation nvarchar(128),
+    @task_situation nvarchar(50),
     @task_begin datetime,
     @task_end datetime,
     @task_category int
 as
 begin
-    declare @task_without_name_msg varchar(255) = 'Tarefa sem nome'
+    declare @task_without_name_msg varchar(50) = 'Tarefa sem nome'
     if @task_name = ''
     begin
         set @task_name = @task_without_name_msg
     end
     begin try
-    insert into [Tempus].[Task]
-    values
-        (@task_name, @task_content, @workspace_id, @task_situation, @task_begin, @task_end, @task_category)
+        begin transaction 
+        insert into [Tempus].[Task] (task_name, task_content, workspace_id, task_situation, task_begin, task_end, task_category)
+        values
+            (@task_name, @task_content, @workspace_id, @task_situation, @task_begin, @task_end, @task_category)
+        commit
     end try 
     begin catch
         declare @error_message nvarchar(2048)
@@ -36,17 +38,24 @@ create or alter procedure [Tempus].[spNewComment]
     @user_id int
 as
 begin
-    if @content is null
+    if @comment_datetime is null 
+    begin 
+        set @comment_datetime = getdate()
+    end
+    if @content is null or @task_id is null or @user_id is null
     begin
-        raiserror('Comment content can not be null', 16, 1)
+        raiserror('Invalid parameters', 16, 1)
         return
     end
     begin try
-    insert into [Tempus].[Comment]
-    values
-        (@task_id, @content, @comment_datetime, @user_id )
+        begin transaction
+        insert into [Tempus].[Comment]
+        values
+            (@task_id, @content, @comment_datetime, @user_id)
+        commit
     end try 
     begin catch 
+        rollback
         declare @error_message nvarchar(2048)
         set @error_message = 'Erro: '+Error_Message();
         throw 51200, @error_message, 1
@@ -58,9 +67,8 @@ go
 
 
 create or alter procedure [Tempus].[spNewWorkspace]
-    @workspace_id int = null,
-    @workspace_name nvarchar(128),
-    @workspace_description nvarchar(255),
+    @workspace_name nvarchar(50),
+    @workspace_description nvarchar(128),
     @workspace_admin int,
     @team_id int
 as
@@ -75,26 +83,15 @@ begin
     end
 
     begin try
-        if @workspace_id is null 
-        begin
-        if not exists (select 1 from [Tempus].[Workspace] where workspace_id = @workspace_id)
-            begin
-            insert into [Tempus].[Workspace]
-                (workspace_name, workspace_description, team_id, workspace_admin)
-            values
-                (@workspace_name, @workspace_description, @team_id, @workspace_admin)
-        end
-        return
-    end 
-        else 
-        begin
-        insert into [Tempus].[Workspace]
+        begin transaction
+        insert into [Tempus].[Workspace](workspace_name, workspace_description, team_id, workspace_admin)
         values
-            (@workspace_id, @workspace_name, @workspace_description, @team_id, @workspace_admin)
-    end 
+            (@workspace_name, @workspace_description, @team_id, @workspace_admin)
+        commit
     end try 
 
     begin catch
+        rollback
         declare @error_message nvarchar(2048)
         set @error_message = 'Erro: '+Error_Message();
         throw 51200, @error_message, 1 
@@ -105,25 +102,24 @@ end
 go
 
 create or alter procedure [Tempus].[spNewCategory]
-    @category_id int,
-    @category_name nvarchar(255),
-    @category_description nvarchar(512)
+    @category_name nvarchar(50),
+    @category_description nvarchar(128)
 as
 begin
-    if @category_id is null or @category_name is null or @category_description is null 
+    if @category_name is null or @category_description is null 
     begin 
         RAISERROR('Invalid parameters', 16, 1)
         return
     end
     begin try
         begin transaction  
-        if exists (select 1 from [Tempus].[Category] where category_id = @category_id)
+        if exists (select 1 from [Tempus].[Category] where category_name = @category_name)
         begin 
             RAISERROR('Category already exists', 16, 1)
             return    
         end 
-        insert into [Tempus].[Category] values 
-            (@category_id, @category_name, @category_description)
+        insert into [Tempus].[Category](category_name, category_description) values 
+            (@category_name, @category_description)
         commit
     end try 
 
@@ -161,20 +157,19 @@ begin
             (@team_id, @user_id)
         return
     end try 
+
     begin catch 
         declare @error_message nvarchar(2048)
         set @error_message = 'Erro: '+Error_Message();
         throw 51200, @error_message, 1 
     end catch
 
-
 end
 
 go
 
 create or alter procedure [Tempus].[spNewTeam]
-    @team_id int,
-    @team_name int
+    @team_name nvarchar(50)
 as
 begin
     if @team_name is null 
@@ -182,15 +177,10 @@ begin
         RAISERROR('Invalid parameters', 16, 1)
         return
     end 
-    if exists(SELECT 1 from [Tempus].[Team] where team_id = @team_id)
-    begin 
-        RAISERROR('Team already exists', 16, 1)
-        return
-    end
     begin try 
         begin transaction 
         insert into [Tempus].[Team] values 
-            (@team_id, @team_name)
+            (@team_name)
         commit 
     end try 
 
@@ -206,14 +196,15 @@ end
 GO
 
 create or alter procedure [Tempus].[spNewUser]
-    @username nvarchar(128),
-    @nickname nvarchar(128),
+    @username nvarchar(40),
+    @nickname nvarchar(40),
     @email varchar(128),
-    @password_hash varchar(100),
-    @password_salt varchar(100)
+    @password_hash varchar(64),
+    @password_salt varchar(64)
 as
 begin
     if @username is null or @nickname is null or @email is null 
+       or @password_hash is null or @password_salt is null
     begin 
         raiserror('Invalid parameters', 16, 1)
         return
@@ -306,7 +297,7 @@ go
 
 create or alter procedure [Tempus].[spUpdateTaskName]
     @task_id int,
-    @task_new_name nvarchar(255)
+    @task_new_name nvarchar(50)
 as
 begin
 
@@ -320,37 +311,37 @@ create or alter procedure [Tempus].[spUpdateTaskContent]
 as
 begin
 
-    end
+end
 
 go
 
 create or alter procedure [Tempus].[spUpdateTaskSituation]
     @task_id int,
-    @task_new_situation nvarchar(128)
+    @task_new_situation nvarchar(50)
 as
 begin
 
-    end
+end
 
 go
 
 create or alter procedure [Tempus].[spUpdateWorkspaceName]
     @workspace_id int,
-    @workspace_new_name nvarchar(128)
+    @workspace_new_name nvarchar(50)
 as
 begin
 
-    end
+end
 
 go
 
 create or alter procedure [Tempus].[spUpdateWorkspaceDescription]
     @workspace_id int,
-    @workspace_new_description nvarchar(255)
+    @workspace_new_description nvarchar(128)
 as
 begin
 
-    end
+end
 
 go
 
@@ -360,7 +351,7 @@ create or alter procedure [Tempus].[spUpdateWorkspaceTeam]
 as
 begin
 
-    end
+end
 
 go
 
@@ -370,57 +361,95 @@ create or alter procedure [Tempus].[spUpdateWorkspaceAdmin]
 as
 begin
 
-    end
+end
 
 go
 
 create or alter procedure [Tempus].[spUpdateCategoryName]
     @category_id int,
-    @category_new_name nvarchar(255)
+    @category_new_name nvarchar(50)
 as
 begin
 
-    end
+end
 
 go
 
 create or alter procedure [Tempus].[spUpdateCategoryContent]
     @category_id int,
-    @category_new_content nvarchar(512)
+    @category_new_content nvarchar(128)
 as
 begin
 
-    end
+end
 
 go
 
 create or alter procedure [Tempus].[spUpdateTeamName]
     @team_id int,
-    @team_new_name nvarchar(128)
+    @team_new_name nvarchar(50)
 as
 begin
 
-    end
+end
 
 go
 
 create or alter procedure [Tempus].[spUpdateUserNickname]
     @user_id int,
-    @user_new_nickname nvarchar(128)
+    @user_new_nickname nvarchar(40)
 as
 begin
 
-    end
+end
 
 go
 
 create or alter procedure [Tempus].[spUpdateUserEmail]
     @user_id int,
-    @user_new_email varchar(128)
+    @user_new_email varchar(40)
 as
 begin
 
+end
+
+go
+
+create or alter procedure [Tempus].[spUpdateUser]
+    @user_id int,
+    @username nvarchar(40),
+    @nickname nvarchar(40), @email varchar(40) 
+as
+begin
+
+end
+
+go 
+
+create or alter procedure [Tempus].[spUpdateUserPassword]
+    @user_id int, @password_hash varchar(64), @password_salt varchar(64)
+as
+begin 
+    if @user_id is null or @password_hash is null or @password_salt is null 
+    begin 
+        raiserror('Invalid parameters', 16, 1)
+        return
     end
+    begin try
+        begin transaction 
+        update [Tempus].[User] 
+        set password_hash = @password_hash, password_salt = @password_salt  
+        where user_id = @user_id
+        commit 
+    end try
+
+    begin catch
+        rollback 
+        declare @error_message nvarchar(2048)
+        set @error_message = 'Erro: '+Error_Message();
+        throw 51200, @error_message, 1 
+    end catch
+end
 
 go
 
