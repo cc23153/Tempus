@@ -30,6 +30,25 @@ exports.getUser = (('/'), async (req, res) => {
         })
 })
 
+exports.getUserTeams = (('/'), async (req, res) =>{
+    const user_id = req.body.user_id
+    const exist = await userExistsById(user_id)
+    
+    if(!exist){
+        res.status(400).json({
+            error: 'true', message: 'User doesn\'t exist'
+        })
+        return
+    }
+    const userTeams = await prisma.UserTeams.findMany({
+        where: {
+            user_id: user_id
+        }
+    })
+    res.status(200).json(userTeams)
+
+})
+
 exports.postUser = (('/'), async (req, res) => {
     const username = req.body.username
     const nickname = req.body.nickname
@@ -52,10 +71,6 @@ exports.postUser = (('/'), async (req, res) => {
     }
     await prisma.$queryRaw`exec Tempus.spNewUser ${username}, ${nickname}, ${email}, ${pwd_hash}, ${pwd_salt}`
     res.status(201).json({error: 'false', message: 'User created succesfully'}) 
-})
-
-exports.putUser = (('/'), async (req, res) => {
-
 })
 
 exports.deleteUser = ( ('/'), async (req, res) => {
@@ -109,6 +124,19 @@ exports.patchUserEmail = ( ('/'), async (req, res) => {
     }
 })
 
+exports.patchUserPassword = ( ('/'), async (req, res) => {
+    const user_id = req.body.user_id
+    const pwd_hash = req.body.pwd_hash
+    const pwd_salt = req.body.pwd_salt
+    const response = await userExistsById(user_id)
+    if(!response){
+        res.status(400).json({error: 'true', message: 'User doesn\'t exist'})
+    }else{
+        await prisma.$queryRaw`exec Tempus.spUpdateUserPassword ${user_id}, ${pwd_hash}, ${pwd_salt}` 
+        res.status(200).json({error: 'false', message: 'Password succesfully updated'})
+    }
+})
+
 exports.putUser = ( ('/'), async (req, res) => {
     const user_id = req.body.user_id
     const username = req.body.username
@@ -123,6 +151,7 @@ exports.putUser = ( ('/'), async (req, res) => {
     }
 
 })
+
 
 module.exports
 
