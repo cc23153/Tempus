@@ -474,7 +474,7 @@ end
 
 go
 
-create or alter procedure [Tempus].[spUpdateTaskContent]
+create or alter procedure [Tempus].[spUpdateTaskDescription]
     @task_id int,
     @task_new_description nvarchar(512)
 as
