@@ -7,6 +7,8 @@ exec Tempus.spNewUser 'snowden', 'Edward', 'ashflunde@protonmail.com', 'f476ac6e
 exec Tempus.spNewUser 'roman', 'Legio Aeterna', 'legio@therome.org', 'b2cf65186994a531c6ba6b97ee9a6beca057cfed041d11a932a5037808d3b35a', '*lglatn374bdc_8@!785'
 
 exec Tempus.spNewTeam 'Grupo G Matutino'
+exec Tempus.spNewTeam 'Grupo F Noturno'
+exec Tempus.spNewTeam 'Los Pollos Hermanos'
 
 exec Tempus.spNewCategory 'Bug Fix', 'Tarefas de para correção de bugs'
 exec Tempus.spNewCategory 'Documentation', 'Mudanças necessárias na documentação'
@@ -18,15 +20,19 @@ exec Tempus.spNewTask 'Tarefa I', 'Resolver problema X na linha Y do código Z, 
 exec Tempus.spNewComment 1, 'Está tudo errado isso ai', '2023-11-03', 1
 
 exec Tempus.spAddTeamMember 1, 1
+exec Tempus.spAddTeamMember 2, 1
+exec Tempus.spAddTeamMember 2, 7
+
+select * from [Tempus].[UserTeams] where user_id = 1
 
 -- Select all
-select * from Tempus.[User]
-select * from Tempus.Team  
-select * from Tempus.Category
-select * from Tempus.Workspace
-select * from Tempus.Task
-select * from Tempus.Comment
-select * from Tempus.TeamMembers
+select * from [Tempus].[User]
+select * from [Tempus].[Team]  
+select * from [Tempus].[Category]
+select * from [Tempus].[Workspace]
+select * from [Tempus].[Task]
+select * from [Tempus].[Comment]
+select * from [Tempus].[TeamMembers]
 
 -- Reset identities
 DBCC CHECKIDENT('Tempus.[Task]', reseed, 0)

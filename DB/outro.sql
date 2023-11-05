@@ -21,6 +21,14 @@ as
     select T.task_id, T.task_name, C.comment_id, C.content from 
     ([Tempus].[Comment] C join [Tempus].[Task] T on C.task_id = T.task_id)
 
+go 
+
+create or alter view [Tempus].[UserTeams]
+as
+    select T.team_id, T.team_name, U.user_id, U.username from [Tempus].[Team] T,
+        ([Tempus].[TeamMembers] TM join [Tempus].[User] U on TM.user_id = U.user_id) where TM.team_id = T.team_id 
+
+
 /* -=-=-=-=-=-=-=-=-=-= TRIGGERS -=-=-=-=-=-=-=-=-=- */
 go 
 
