@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["views"]
 }
 
 datasource db {
@@ -8,14 +9,14 @@ datasource db {
 }
 
 model Category {
-  category_id          Int     @id(map: "PK__Category__D54EE9B44D8B09C6")
+  category_id          Int     @id(map: "PK__Category__D54EE9B45458E319") @default(autoincrement())
   category_name        String  @db.NVarChar(50)
   category_description String? @db.NVarChar(128)
   Task                 Task[]
 }
 
 model Comment {
-  comment_id       Int      @id(map: "PK__Comment__E7957687AEE16ACD") @default(autoincrement())
+  comment_id       Int      @id(map: "PK__Comment__E7957687B4172E74") @default(autoincrement())
   task_id          Int
   content          String   @db.NText
   comment_datetime DateTime @db.DateTime
@@ -25,7 +26,7 @@ model Comment {
 }
 
 model Task {
-  task_id        Int       @id(map: "PK__Task__0492148DE92D48F6") @default(autoincrement())
+  task_id        Int       @id(map: "PK__Task__0492148D82BFA1D2") @default(autoincrement())
   task_name      String    @db.NVarChar(50)
   task_content   String?   @db.NVarChar(512)
   workspace_id   Int
@@ -39,14 +40,14 @@ model Task {
 }
 
 model Team {
-  team_id     Int           @id(map: "PK__Team__F82DEDBCAC188579") @default(autoincrement())
+  team_id     Int           @id(map: "PK__Team__F82DEDBCC94454CE") @default(autoincrement())
   team_name   String        @db.NVarChar(50)
   TeamMembers TeamMembers[]
   Workspace   Workspace[]
 }
 
 model TeamMembers {
-  teammembers_id Int  @id(map: "PK__TeamMemb__009B24DFA1A0C471") @default(autoincrement())
+  teammembers_id Int  @id(map: "PK__TeamMemb__009B24DFC030DE9E") @default(autoincrement())
   team_id        Int
   user_id        Int
   Team           Team @relation(fields: [team_id], references: [team_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_team_id")
@@ -67,7 +68,7 @@ model User {
 }
 
 model Workspace {
-  workspace_id          Int    @id(map: "PK__Workspac__7C58AC0BF55D8C8E") @default(autoincrement())
+  workspace_id          Int    @id(map: "PK__Workspac__7C58AC0B0F70E6CF") @default(autoincrement())
   workspace_name        String @db.NVarChar(50)
   workspace_description String @db.NVarChar(128)
   team_id               Int
@@ -75,4 +76,19 @@ model Workspace {
   Task                  Task[]
   User                  User   @relation(fields: [workspace_admin], references: [user_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_workspace_admin")
   Team                  Team   @relation(fields: [team_id], references: [team_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_workspace_team_id")
+}
+
+view TasksWithComments {
+  task_id    Int @unique
+  task_name  String @db.NVarChar(50)
+  comment_id Int
+  content    String @db.NText
+
+}
+
+view UserTeams {
+  team_id   Int @unique
+  team_name String @db.NVarChar(50)
+  user_id   Int
+  username  String @db.NVarChar(40)
 }
