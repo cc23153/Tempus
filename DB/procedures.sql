@@ -864,7 +864,7 @@ begin
     end catch
 end
 
-go
+go 
 
 create or alter procedure [Tempus].[spUpdateTask]
     @task_id int,
@@ -904,6 +904,42 @@ begin
                 task_begin = @task_begin, task_end = @task_end, 
                 task_category = @task_category 
             where task_id = @task_id
+        commit
+    end try 
+
+    begin catch 
+        rollback 
+        declare @error_message nvarchar(2048)
+        set @error_message = 'Erro: '+Error_Message();
+        throw 51200, @error_message, 1  
+    end catch
+end
+
+go
+
+create or alter procedure [Tempus].[spUpdateCategory]
+    @category_id int,
+    @category_name nvarchar(50),
+    @category_description nvarchar(128)
+as
+begin
+    if @category_id is null or @category_name is null 
+        or @category_description is null
+    begin 
+        raiserror('Invalid parameters', 16, 1)
+        return
+    end
+    if not exists (select 1 from [Tempus].[Category] where category_id = @category_id)
+    begin 
+        raiserror('The category doesn''t exist', 16, 1)
+        return
+    end
+
+    begin try 
+        begin transaction
+        update [Tempus].[Category] 
+            set category_name = @category_name, category_description = @category_description
+            where category_id = @category_id
         commit
     end try 
 
