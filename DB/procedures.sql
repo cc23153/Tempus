@@ -828,6 +828,36 @@ end
 
 go
 
+create or alter procedure [Tempus].[spUpdateUserPassword]
+    @user_id int, @password_hash varchar(64), @password_salt varchar(64)
+as
+begin 
+    if @user_id is null or @password_hash is null or @password_salt is null 
+    begin 
+        raiserror('Invalid parameters', 16, 1)
+        return
+    end
+    if not exists (select 1 from [Tempus].[User] where user_id = @user_id)
+    begin 
+        raiserror('The user doesn''t exist', 16, 1)
+        return
+    end
+    begin try
+        begin transaction 
+        update [Tempus].[User] 
+        set password_hash = @password_hash, password_salt = @password_salt  
+        where user_id = @user_id
+        commit 
+    end try
+
+    begin catch
+        rollback 
+        declare @error_message nvarchar(2048)
+        set @error_message = 'Erro: '+Error_Message();
+        throw 51200, @error_message, 1 
+    end catch
+end
+
 go 
 create or alter procedure [Tempus].[spUpdateUser]
     @user_id int,
@@ -954,29 +984,36 @@ end
 go 
 
 
-create or alter procedure [Tempus].[spUpdateCategory]
-    @category_id int,
-    @category_name nvarchar(50),
-    @category_description nvarchar(128)
+create or alter procedure [Tempus].[spUpdateWorkspace]
+    @workspace_id int,
+    @workspace_name nvarchar(50),
+    @workspace_description nvarchar(128),
+    @workspace_admin int
 as
 begin
-    if @category_id is null or @category_name is null 
-        or @category_description is null
+    if @workspace_id is null or @workspace_name is null 
+        or @workspace_description is null or @workspace_admin is null
     begin 
         raiserror('Invalid parameters', 16, 1)
         return
     end
-    if not exists (select 1 from [Tempus].[Category] where category_id = @category_id)
+    if not exists (select 1 from [Tempus].[Workspace] where workspace_id = @workspace_id)
     begin 
-        raiserror('The category doesn''t exist', 16, 1)
+        raiserror('The workspace doesn''t exist', 16, 1)
+        return
+    end
+    if not exists (select 1 from [Tempus].[User] where user_id = @user_id)
+    begin 
+        raiserror('The user doesn''t exist', 16, 1)
         return
     end
 
     begin try 
         begin transaction
-        update [Tempus].[Category] 
-            set category_name = @category_name, category_description = @category_description
-            where category_id = @category_id
+        update [Tempus].[Workspace] 
+            set workspace_name = @workspace_name, workspace_description = @workspace_description, 
+                workspace_admin = @workspace_admin
+            where workspace_id = @workspace_id
         commit
     end try 
 
@@ -989,38 +1026,6 @@ begin
 end
 
 go 
-
-create or alter procedure [Tempus].[spUpdateUserPassword]
-    @user_id int, @password_hash varchar(64), @password_salt varchar(64)
-as
-begin 
-    if @user_id is null or @password_hash is null or @password_salt is null 
-    begin 
-        raiserror('Invalid parameters', 16, 1)
-        return
-    end
-    if not exists (select 1 from [Tempus].[User] where user_id = @user_id)
-    begin 
-        raiserror('The user doesn''t exist', 16, 1)
-        return
-    end
-    begin try
-        begin transaction 
-        update [Tempus].[User] 
-        set password_hash = @password_hash, password_salt = @password_salt  
-        where user_id = @user_id
-        commit 
-    end try
-
-    begin catch
-        rollback 
-        declare @error_message nvarchar(2048)
-        set @error_message = 'Erro: '+Error_Message();
-        throw 51200, @error_message, 1 
-    end catch
-end
-
-go
 
 /*=-=-=-=-=-=-=-=-=-=-=- OUTRO PROCEDURES -=-=-=-=-=-=-=-=-=-=-=*/
 create or alter procedure [Tempus].[spNumMembersTeam]
