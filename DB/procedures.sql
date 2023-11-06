@@ -864,6 +864,57 @@ begin
     end catch
 end
 
+go
+
+create or alter procedure [Tempus].[spUpdateTask]
+    @task_id int,
+    @task_name nvarchar(50),
+    @task_content nvarchar(512),
+    @workspace_id int,
+    @task_situation nvarchar(50),
+    @task_begin datetime,
+    @task_end datetime,
+    @task_category int
+as
+begin
+    if @task_id is null or @task_name is null 
+        or @task_content is null or @workspace_id is null 
+        or @task_situation is null or @task_begin is null 
+        or @task_end is null or @task_category is null  
+    begin 
+        raiserror('Invalid parameters', 16, 1)
+        return
+    end
+    if not exists (select 1 from [Tempus].[Task] where task_id = @task_id)
+    begin 
+        raiserror('The task doesn''t exist', 16, 1)
+        return
+    end
+    if not exists (select 1 from [Tempus].[Workspace] where workspace_id = @workspace_id)
+    begin 
+        raiserror('The workspace doesn''t exist', 16, 1)
+        return
+    end
+
+    begin try 
+        begin transaction
+        update [Tempus].[Task] 
+            set task_name = @task_name, task_content = @task_content, 
+                workspace_id = @workspace_id, task_situation = @task_situation, 
+                task_begin = @task_begin, task_end = @task_end, 
+                task_category = @task_category 
+            where task_id = @task_id
+        commit
+    end try 
+
+    begin catch 
+        rollback 
+        declare @error_message nvarchar(2048)
+        set @error_message = 'Erro: '+Error_Message();
+        throw 51200, @error_message, 1  
+    end catch
+end
+
 go 
 
 create or alter procedure [Tempus].[spUpdateUserPassword]
