@@ -1,4 +1,5 @@
 const { PrismaClient } = require('@prisma/client')
+const { postUserSchema, deleteUserSchema, patchUsernameSchema, patchNicknameSchema, patchPasswordSchema, patchEmailSchema } = require('../database/yup/userSchemas')
 const prisma = new PrismaClient()
 
 const userExistsById = async (user_id) => {
@@ -21,137 +22,211 @@ const userExistsByUsername = async (username) => {
 
 
 exports.getUser = (('/'), async (req, res) => {
-    const response =  await userExistsByUsername(req.body.username)
-    if(response)
-        res.status(200).json(response)
-    else 
-        res.status(400).json({
-            error: 'true', message: 'User doesn\'t exist'
+    const username = req.body.username
+    await getUserSchema.validate({ username })
+        .then(async function () {
+            const response = await userExistsByUsername(req.body.username)
+            if (!response) {
+                res.status(400).json({
+                    error: 'true', message: 'User doesn\'t exist'
+                })
+                return
+            }
+            res.status(200).json(response)
         })
+        .catch((err) => {
+            res.status(400).json({
+                error: 'true', message: `${err.message}`
+            })
+        })
+
+
 })
 
-exports.getUserTeams = (('/'), async (req, res) =>{
+exports.getUserTeams = (('/'), async (req, res) => {
     const user_id = req.body.user_id
-    const exist = await userExistsById(user_id)
-    
-    if(!exist){
-        res.status(400).json({
-            error: 'true', message: 'User doesn\'t exist'
+
+    await getUserSchema.validate({ user_id })
+        .then(async () => {
+            const exist = await userExistsById(user_id)
+            if (!exist) {
+                res.status(400).json({
+                    error: 'true', message: 'User doesn\'t exist'
+                })
+                return
+            }
+            const userTeams = await prisma.UserTeams.findMany({
+                where: {
+                    user_id: user_id
+                }
+            })
+            res.status(200).json(userTeams)
         })
-        return
-    }
-    const userTeams = await prisma.UserTeams.findMany({
-        where: {
-            user_id: user_id
-        }
-    })
-    res.status(200).json(userTeams)
+        .catch((err) => {
+            res.status(400).json({
+                error: 'true', message: `${err.message}`
+            })
+        })
 
 })
 
 exports.postUser = (('/'), async (req, res) => {
-    const username = req.body.username
-    const nickname = req.body.nickname
-    const email = req.body.email
-    const pwd_hash = req.body.pwd_hash
-    const pwd_salt = req.body.pwd_salt
-    // Presumimos que esses dados já estão 'sanitized'; Essa sanitização deve ocorrer no aplicativo web
+    const { username, nickname, email, pwd_hash, pwd_salt } = req.body
 
-    const alreadyExist =  await prisma.user.findFirst({
-        where: {
-            OR: [
-                { username: username },
-                { email: email }
-            ]
-        }
-    })
-    if(alreadyExist){
-        res.status(400).json({error: 'true', message: 'User already exists'})
-        return
-    }
-    await prisma.$queryRaw`exec Tempus.spNewUser ${username}, ${nickname}, ${email}, ${pwd_hash}, ${pwd_salt}`
-    res.status(201).json({error: 'false', message: 'User created succesfully'}) 
+    await postUserSchema.validate({username, nickname, email, pwd_hash, pwd_salt})
+        .then(async () => {
+            const alreadyExist = await prisma.user.findFirst({
+                where: {
+                    OR: [
+                        { username: username },
+                        { email: email }
+                    ]
+                }
+            })
+            if (alreadyExist) {
+                res.status(400).json({ error: 'true', message: 'User already exists' })
+                return
+            }
+
+            await prisma.$queryRaw`exec Tempus.spNewUser ${username}, ${nickname}, ${email}, ${pwd_hash}, ${pwd_salt}`
+            res.status(201).json({ error: 'false', message: 'User created succesfully' })
+        })
+        .catch((err) => {
+            res.status(400).json({
+                error: 'true', message: `${err.message}`
+            })
+        })
 })
 
-exports.deleteUser = ( ('/'), async (req, res) => {
+exports.deleteUser = (('/'), async (req, res) => {
     const user_id = req.body.user_id
-    const response = await userExistsById(user_id)
 
-    if(!response){
-        res.status(400).json({error: 'true', message: 'User doesn\'t exist'})
-    }else{
-        await prisma.$queryRaw`exec Tempus.spDeleteUser ${user_id}` 
-        res.status(200).json({error: 'false', message: 'User deleted'})
-    }
-
-})
-
-exports.patchUserUsername = ( ('/'), async (req, res) => {
-    const user_id = req.body.user_id
-    const username = req.body.username
-    const response = await userExistsById(user_id)
-    if(!response){
-        res.status(400).json({error: 'true', message: 'User doesn\'t exist'})
-    }else{
-        await prisma.$queryRaw`exec Tempus.spUpdateUsername ${user_id}, ${username}` 
-        res.status(200).json({error: 'false', message: 'Username succesfully updated'})
-    }
+    await deleteUserSchema.validate({ user_id })
+        .then(async () => {
+            const response = await userExistsById(user_id)
+            if (!response) {
+                res.status(400).json({ error: 'true', message: 'User doesn\'t exist' })
+                return
+            }
+            
+            await prisma.$queryRaw`exec Tempus.spDeleteUser ${user_id}`
+            res.status(200).json({ error: 'false', message: 'User deleted' })
+            
+        })
+        .catch((err) => {
+            res.status(400).json({
+                error: 'true', message: `${err.message}`
+            })
+        })
 
 })
 
-exports.patchUserNickname = ( ('/'), async (req, res) => {
-    const user_id = req.body.user_id
-    const nickname = req.body.nickname
-    const response = await userExistsById(user_id)
-    if(!response){
-        res.status(400).json({error: 'true', message: 'User doesn\'t exist'})
-    }else{
-        await prisma.$queryRaw`exec Tempus.spUpdateUserNickname ${user_id}, ${nickname}` 
-        res.status(200).json({error: 'false', message: 'Nickname succesfully updated'})
-    }
+exports.patchUserUsername = (('/'), async (req, res) => {
+    const { user_id, username } = req.body
+
+    await patchUsernameSchema.validate({ user_id, username })
+        .then(async () => {
+            const response = await userExistsById(user_id)
+            if (!response) {
+                res.status(400).json({ error: 'true', message: 'User doesn\'t exist' })
+            } else {
+                await prisma.$queryRaw`exec Tempus.spUpdateUsername ${user_id}, ${username}`
+                res.status(200).json({ error: 'false', message: 'Username succesfully updated' })
+            }
+        })
+        .catch((err) => {
+            res.status(400).json({
+                error: 'true', message: `${err.message}`
+            })
+        })
+})
+
+exports.patchUserNickname = (('/'), async (req, res) => {
+    const { user_id, nickname } = req.body
+
+    await patchNicknameSchema.validate({user_id, nickname})
+        .then(async () => {
+            const response = await userExistsById(user_id)
+            if (!response) {
+                res.status(400).json({ error: 'true', message: 'User doesn\'t exist' })
+                return
+            }
+
+            await prisma.$queryRaw`exec Tempus.spUpdateUserNickname ${user_id}, ${nickname}`
+            res.status(200).json({ error: 'false', message: 'Nickname succesfully updated' })
+
+        })
+        .catch((err) => {
+            res.status(400).json({
+                error: 'true', message: `${err.message}`
+            })
+        })
+})
+
+exports.patchUserEmail = (('/'), async (req, res) => {
+    const { user_id, email } = req.body
+
+    await patchEmailSchema.validate({user_id, email})
+        .then(async () => {
+            const response = await userExistsById(user_id)
+            if (!response) {
+                res.status(400).json({ error: 'true', message: 'User doesn\'t exist' })
+                return
+            }
+            await prisma.$queryRaw`exec Tempus.spUpdateUserEmail ${user_id}, ${email}`
+            res.status(200).json({ error: 'false', message: 'Email succesfully updated' })
+        })
+        .catch((err) => {
+            res.status(400).json({
+                error: 'true', message: `${err.message}`
+            })
+        })
 
 })
 
-exports.patchUserEmail = ( ('/'), async (req, res) => {
-    const user_id = req.body.user_id
-    const email = req.body.email
-    const response = await userExistsById(user_id)
-    if(!response){
-        res.status(400).json({error: 'true', message: 'User doesn\'t exist'})
-    }else{
-        await prisma.$queryRaw`exec Tempus.spUpdateUserEmail ${user_id}, ${email}` 
-        res.status(200).json({error: 'false', message: 'Email succesfully updated'})
-    }
+exports.patchUserPassword = (('/'), async (req, res) => {
+    const { user_id, pwd_hash, pwd_salt } = req.body
+
+    await patchPasswordSchema.validate({user_id, pwd_hash, pwd_salt})
+        .then(async () => {
+            const response = await userExistsById(user_id)
+            if (!response) {
+                res.status(400).json({ error: 'true', message: 'User doesn\'t exist' })
+                return
+            }
+
+            await prisma.$queryRaw`exec Tempus.spUpdateUserPassword ${user_id}, ${pwd_hash}, ${pwd_salt}`
+            res.status(200).json({ error: 'false', message: 'Password succesfully updated' })
+
+        })
+        .catch((err) => {
+            res.status(400).json({
+                error: 'true', message: `${err.message}`
+            })
+        })
 })
 
-exports.patchUserPassword = ( ('/'), async (req, res) => {
-    const user_id = req.body.user_id
-    const pwd_hash = req.body.pwd_hash
-    const pwd_salt = req.body.pwd_salt
-    const response = await userExistsById(user_id)
-    if(!response){
-        res.status(400).json({error: 'true', message: 'User doesn\'t exist'})
-    }else{
-        await prisma.$queryRaw`exec Tempus.spUpdateUserPassword ${user_id}, ${pwd_hash}, ${pwd_salt}` 
-        res.status(200).json({error: 'false', message: 'Password succesfully updated'})
-    }
-})
+exports.putUser = (('/'), async (req, res) => {
+    const { user_id, username, nickname, email } = req.body
 
-exports.putUser = ( ('/'), async (req, res) => {
-    const user_id = req.body.user_id
-    const username = req.body.username
-    const nickname = req.body.nickname
-    const email = req.body.email
-    const response = await userExistsById(user_id)
-    if(!response){
-        res.status(400).json({error: 'true', message: 'User doesn\'t exist'})
-    }else{
-        await prisma.$queryRaw`exec Tempus.spUpdateUser ${user_id}, ${username}, ${nickname}, ${email}` 
-        res.status(200).json({error: 'false', message: 'User information succesfully updated'})
-    }
+    await postUserSchema.validate({user_id, username, nickname, email})
+        .then(async () => {
+            const response = await userExistsById(user_id)
+            if (!response) {
+                res.status(400).json({ error: 'true', message: 'User doesn\'t exist' })
+                return
+            }
+            
+            await prisma.$queryRaw`exec Tempus.spUpdateUser ${user_id}, ${username}, ${nickname}, ${email}`
+            res.status(200).json({ error: 'false', message: 'User information succesfully updated' })
+        })
+        .catch((err) => {
+            res.status(400).json({
+                error: 'true', message: `${err.message}`
+            })
+        })
 
 })
-
 
 module.exports
 
