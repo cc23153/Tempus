@@ -61,12 +61,12 @@ exports.putTask = (('/'), async(req, res)=> {
     const task_category = req.body.task_category
     
     const workspaceExist =  async (workspace_id) => {
-        const workspace_id = await prisma.task.findUnique({
+        const workspace = await prisma.task.findUnique({
             where: {
                 workspace_id: workspace_id
             }
         })
-        return workspace_id
+        return workspace
     }
 
     if(!taskExist(task_id)){
