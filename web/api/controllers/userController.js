@@ -1,5 +1,5 @@
 const { PrismaClient } = require('@prisma/client')
-const { postUserSchema, deleteUserSchema, patchUsernameSchema, patchNicknameSchema, patchPasswordSchema, patchEmailSchema } = require('../database/yup/userSchemas')
+const { getUserSchema, postUserSchema, deleteUserSchema, patchUsernameSchema, patchNicknameSchema, patchPasswordSchema, patchEmailSchema } = require('../database/yup/userSchemas')
 const prisma = new PrismaClient()
 
 const userExistsById = async (user_id) => {
