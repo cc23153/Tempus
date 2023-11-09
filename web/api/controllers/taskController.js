@@ -1,5 +1,6 @@
 const {PrismaClient} = require('@prisma/client')
 const prisma = new PrismaClient()
+const { getTask, postTask, deleteTask } = require('../database/yup/taskSchemas')
 
 const taskExist =  async (task_id) => {
     const task = await prisma.task.findUnique({
@@ -12,12 +13,16 @@ const taskExist =  async (task_id) => {
 
 exports.getTask = (('/'),async(req, res)=>{
     const task_id = req.body.task_id
-    const task = await taskExist(task_id)
-    if(!task){
-        res.status(400).json({error: true, message : "Task doesn't exist"})
-        return
-    }
-    res.status(200).json(task)
+
+    await getTask.validate({task_id})
+    .then(async ( )=> {
+        const task = await taskExist(task_id)
+        if(!task){
+            res.status(400).json({error: true, message : "Task doesn't exist"})
+            return
+        }
+        res.status(200).json(task)
+    })
 })
 
 exports.postTask = (('/'), async(req, res)=> {
@@ -28,26 +33,36 @@ exports.postTask = (('/'), async(req, res)=> {
     const task_begin = req.body.task_begin
     const task_end = req.body.task_end
     const task_category = req.body.task_category
-    
-    const workspaceExist =  async (task_id) => {
-        const task = await prisma.task.findUnique({
-            where: {
-                task_id: task_id
-            }
-        })
-        return task
-    }
 
-    if(!workspaceExist){
-        res.status(400).json({error: true, message : "Workspace doesn't exist"})
-        return
-   }
-   
-   await prisma.$queryRaw`exec Tempus.spNewTask 
-        ${task_name}, ${task_content}, 
-        ${workspace_id}, ${task_situation}, 
-        ${task_begin}, ${task_end}, ${task_category}`
-   res.status(200).json({error: false, message: "Task succesfully inserted"})
+    await postTask.validate({task_situation, task_name, task_content, workspace_id, task_begin, task_end, task_category})
+    .then( async () => {
+        const workspaceExist =  async (task_id) => {
+            const task = await prisma.task.findUnique({
+                where: {
+                    task_id: task_id
+                }
+            })
+            return task
+        }
+
+        if(!workspaceExist){
+            res.status(400).json({error: true, message : "Workspace doesn't exist"})
+            return
+       }
+       
+       await prisma.$queryRaw`exec Tempus.spNewTask 
+            ${task_name}, ${task_content}, 
+            ${workspace_id}, ${task_situation}, 
+            ${task_begin}, ${task_end}, ${task_category}`
+       res.status(200).json({error: false, message: "Task succesfully inserted"})
+
+    })
+    .catch( (err) => {
+        res.status(400).json({
+            error: 'true', message: `${err.message}`
+        })
+    })
+    
 })
 
 exports.putTask = (('/'), async(req, res)=> {
@@ -60,69 +75,106 @@ exports.putTask = (('/'), async(req, res)=> {
     const task_end = req.body.task_end
     const task_category = req.body.task_category
     
-    const workspaceExist =  async (workspace_id) => {
-        const workspace = await prisma.task.findUnique({
-            where: {
-                workspace_id: workspace_id
-            }
+    await postTask.validate({task_situation, task_name, task_content, workspace_id, task_begin, task_end, task_category})
+    .then( async () => {
+        const workspaceExist =  async (task_id) => {
+            const task = await prisma.task.findUnique({
+                where: {
+                    task_id: task_id
+                }
+            })
+            return task
+        }
+
+        if(!workspaceExist){
+            res.status(400).json({error: true, message : "Workspace doesn't exist"})
+            return
+       }
+       
+       await prisma.$queryRaw`exec Tempus.spUpdateTask 
+            ${task_id}, ${task_name}, 
+            ${task_content}, ${workspace_id}, 
+            ${task_situation}, ${task_begin}, 
+            ${task_end}, ${task_category}`
+       res.status(200).json({error: false, message: "Task succesfully inserted"})
+
+    })
+    .catch( (err) => {
+        res.status(400).json({
+            error: 'true', message: `${err.message}`
         })
-        return workspace
-    }
-
-    if(!taskExist(task_id)){
-        res.status(400).json({error: true, message : "Task doesn't exist"})
-        return
-   }
-
-    if(!workspaceExist){
-        res.status(400).json({error: true, message : "Workspace doesn't exist"})
-        return
-   }
-   
-   await prisma.$queryRaw`exec Tempus.spUpdateTask  
-        ${task_id}, ${task_name}, 
-        ${task_content}, ${workspace_id}, 
-        ${task_situation}, ${task_begin}, 
-        ${task_end}, ${task_category}`
-   res.status(200).json({error: false, message: "Task succesfully updated"})
+    })
+    
 })
 
 exports.deleteTask = (('/'), async(req, res)=> {
     const task_id = req.body.task_id
-    const task = await taskExist(task_id)
-    if(!task){
-        res.status(400).json({error: true, message : "Task doesn't exist"})
-        return
-   }
-   
-   await prisma.$queryRaw`exec Tempus.spDeleteTask ${task_id}`
-   res.status(200).json({error: false, message: "Task succesfully deleted"})
+
+    await deleteTask.validate({ task_id })
+    .then( async () => {
+        const task = await taskExist(task_id)
+        if(!task){
+            res.status(400).json({error: true, message : "Task doesn't exist"})
+            return
+        }
+    
+        await prisma.$queryRaw`exec Tempus.spDeleteTask ${task_id}`
+        res.status(200).json({error: false, message: "Task succesfully deleted"})
+    })
+    .catch((err) => {
+        res.status(400).json({
+            error: 'true', message: `${err.message}`
+        })
+    })
+
+    
 })
 
 exports.patchTaskName = (('/'), async(req, res)=> {
     const task_id = req.body.task_id
     const task_name = req.body.task_name
-    const task = await taskExist(task_id)
-    if(!task){
-        res.status(400).json({error: true, message : "Task doesn't exist"})
-        return
-   }
-   console.log(task_name)
-   await prisma.$queryRaw`exec Tempus.spUpdateTaskName ${task_id}, ${task_name}`
-   res.status(200).json({error: false, message: "Task succesfully updated"})
+
+    await patchTaskName.validate({ task_id, task_name})
+    .then( async () => {
+        const task = await taskExist(task_id)
+        if(!task){
+            res.status(400).json({error: true, message : "Task doesn't exist"})
+            return
+        }
+    
+        await prisma.$queryRaw`exec Tempus.spUpdateTaskName ${task_id}, ${task_name}`
+        res.status(200).json({error: false, message: "Task succesfully updated"})
+    })
+    .catch((err) => {
+        res.status(400).json({
+            error: 'true', message: `${err.message}`
+        })
+    })
+
+    
 })
 
 exports.patchTaskDescription = (('/'), async(req, res)=> {
     const task_id = req.body.task_id
     const task_description = req.body.task_description
-    const task = await taskExist(task_id)
-    if(!task){
-        res.status(400).json({error: true, message : "Task doesn't exist"})
-        return
-   }
+
+    await patchTaskDescription.validate({ task_id, task_description})
+    .then(async () => {
+        const task = await taskExist(task_id)
+        if(!task){
+            res.status(400).json({error: true, message : "Task doesn't exist"})
+            return
+        }
    
-   await prisma.$queryRaw`exec Tempus.spUpdateTaskDescription ${task_id}, ${task_description}`
-   res.status(200).json({error: false, message: "Task succesfully updated"})
+        await prisma.$queryRaw`exec Tempus.spUpdateTaskDescription ${task_id}, ${task_description}`
+        res.status(200).json({error: false, message: "Task succesfully updated"})
+    })
+    .catch((err) => {
+        res.status(400).json({
+            error: 'true', message: `${err.message}`
+        })
+    })
+
 })
 exports.patchTaskSituation = (('/'), async(req, res)=> {
     const task_id = req.body.task_id
