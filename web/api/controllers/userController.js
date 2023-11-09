@@ -1,5 +1,5 @@
 const { PrismaClient } = require('@prisma/client')
-const { getUserSchema, postUserSchema, deleteUserSchema, patchUsernameSchema, patchNicknameSchema, patchPasswordSchema, patchEmailSchema } = require('../database/yup/userSchemas')
+const { getUserSchema, postUserSchema, deleteUserSchema, patchUsernameSchema, patchNicknameSchema, patchPasswordSchema, patchEmailSchema, putUser, getUserTeamsSchema } = require('../database/yup/userSchemas')
 const prisma = new PrismaClient()
 
 const userExistsById = async (user_id) => {
@@ -46,7 +46,7 @@ exports.getUser = (('/'), async (req, res) => {
 exports.getUserTeams = (('/'), async (req, res) => {
     const user_id = req.body.user_id
 
-    await getUserSchema.validate({ user_id })
+    await getUserTeamsSchema.validate({ user_id })
         .then(async () => {
             const exist = await userExistsById(user_id)
             if (!exist) {
