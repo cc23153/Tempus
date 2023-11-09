@@ -38,7 +38,7 @@ exports.postUserSchema = yup.object().shape({
     nickname: nickname,
     email: email,
     pwd_hash: pwd_hash, 
-    pwd_salt: pwd_salt,
+    pwd_salt: pwd_salt
 })
 
 exports.deleteUserSchema = yup.object().shape({
@@ -64,7 +64,7 @@ exports.patchPasswordSchema = yup.object().shape({
     pwd_salt: pwd_salt
 })
 
-exports.putUser = yup.object().shape({
+exports.putUserSchema = yup.object().shape({
     user_id: user_id,
     username: username,
     nickname: nickname,
