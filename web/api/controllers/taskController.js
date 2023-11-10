@@ -176,17 +176,30 @@ exports.patchTaskDescription = (('/'), async(req, res)=> {
     })
 
 })
+
+
 exports.patchTaskSituation = (('/'), async(req, res)=> {
     const task_id = req.body.task_id
     const task_situation = req.body.task_situation
-    const task = await taskExist(task_id)
-    if(!task){
-        res.status(400).json({error: true, message : "Task doesn't exist"})
-        return
-   }
-   
-   await prisma.$queryRaw`exec Tempus.spUpdateTaskSituation ${task_id}, ${task_situation}`
-   res.status(200).json({error: false, message: "Task succesfully updated"})
+    
+    await patchTaskSituation.validate({task_id, task_situation})
+
+    .then(async () => {
+        const task = await taskExist(task_id)
+        if(!task){
+            res.status(400).json({error: true, message : "Task doesn't exist"})
+            return
+        }
+    
+        await prisma.$queryRaw`exec Tempus.spUpdateTaskSituation ${task_id}, ${task_situation}`
+        res.status(200).json({error: false, message: "Task succesfully updated"})
+    })
+    .catch((err) => {
+        res.status(400).json({
+            error: 'true', message: `${err.message}`
+        })
+    })
+    
 })
 
 
