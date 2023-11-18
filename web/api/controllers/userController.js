@@ -229,4 +229,3 @@ exports.putUser = (('/'), async (req, res) => {
 })
 
 module.exports
-
