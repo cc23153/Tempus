@@ -5,8 +5,10 @@ router.get('/',taskController.getTask)
 router.post('/', taskController.postTask)
 router.put('/', taskController.putTask)
 router.delete('/',taskController.deleteTask)
-router.patch('/patchdescription', taskController.patchTaskDescription)
-router.patch('/patchname', taskController.patchTaskName)
-router.patch('/patchsituation', taskController.patchTaskSituation)
+router.patch('/description', taskController.patchTaskDescription)
+router.patch('/name', taskController.patchTaskName)
+router.patch('/situation', taskController.patchTaskSituation)
+router.patch('/category', taskController.patchTaskCategory)
+router.patch('/end', taskController.patchTaskEnd)
 
 module.exports = router

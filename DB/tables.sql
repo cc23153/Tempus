@@ -4,6 +4,7 @@ go
 
 create table [Tempus].[User](
     [user_id] int identity primary key,
+    -- TODO: change username type to varchar and max size to 20
     [username] nvarchar(40) not null unique,
     [nickname] nvarchar(40) not null,
     [email] varchar(128) not null unique,
