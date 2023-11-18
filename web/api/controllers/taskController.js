@@ -28,13 +28,13 @@ exports.getTask = (('/'),async(req, res)=>{
 exports.postTask = (('/'), async(req, res)=> {
     const task_situation = req.body.task_situation
     const task_name = req.body.task_name
-    const task_content = req.body.task_content
+    const task_description = req.body.task_description
     const workspace_id = req.body.workspace_id
-    const task_begin = req.body.task_begin
-    const task_end = req.body.task_end
-    const task_category = req.body.task_category
-
-    await postTask.validate({task_situation, task_name, task_content, workspace_id, task_begin, task_end, task_category})
+    const task_begin =  new Date(req.body.task_begin)
+    const task_end = new Date(req.body.task_end)
+    const task_category = (req.body.task_category)
+    
+    await postTask.validate({task_situation, task_name, task_description, workspace_id, task_begin, task_end, task_category})
     .then( async () => {
         const workspaceExist =  async (task_id) => {
             const task = await prisma.task.findUnique({
@@ -50,8 +50,9 @@ exports.postTask = (('/'), async(req, res)=> {
             return
        }
        
+       
        await prisma.$queryRaw`exec Tempus.spNewTask 
-            ${task_name}, ${task_content}, 
+            ${task_name}, ${task_description}, 
             ${workspace_id}, ${task_situation}, 
             ${task_begin}, ${task_end}, ${task_category}`
        res.status(200).json({error: false, message: "Task succesfully inserted"})
