@@ -1,6 +1,6 @@
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
-const { getTask, postTask, deleteTask, patchTaskCategory, patchTaskDescription, patchTaskName, patchTaskSituation } = require('../database/yup/taskSchemas')
+const { getTask, postTask, deleteTask, patchTaskCategory, patchTaskDescription, patchTaskName, patchTaskSituation, patchTaskEnd } = require('../database/yup/taskSchemas')
 
 const taskExist = async (task_id) => {
     const task = await prisma.task.findUnique({
@@ -233,6 +233,29 @@ exports.patchTaskCategory = (('/'), async (req, res) => {
         })
 
 })
+
+exports.patchTaskEnd = (('/'), async (req, res)=> {
+    const task_id = req.body.task_id
+    const task_end = new Date(req.body.task_end)
+
+    await patchTaskEnd.validate({ task_id, task_end })
+
+        .then(async () => {
+            const task = await taskExist(task_id)
+            if (!task) {
+                res.status(400).json({ error: true, message: "Task doesn't exist" })
+                return
+            }
+
+            await prisma.$queryRaw`exec Tempus.spUpdateTaskEnd ${task_id}, ${task_end}`
+            res.status(200).json({ error: false, message: "Task succesfully updated" })
+        })
+        .catch((err) => {
+            res.status(400).json({
+                error: 'true', message: `${err.message}`
+            })
+        })
+}) 
 
 
 module.exports 

@@ -75,5 +75,9 @@ exports.patchTaskCategory = yup.object().shape({
     task_category: task_category
 })
 
+exports.patchTaskEnd = yup.object().shape({
+    task_id: task_id,
+    task_end: task_end
+})
 
                     

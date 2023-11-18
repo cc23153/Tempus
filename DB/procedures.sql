@@ -570,6 +570,38 @@ begin
     end catch
 end
 
+go 
+
+create or alter procedure [Tempus].[spUpdateTaskEnd]
+    @task_id int,
+    @task_new_end datetime
+as
+begin
+    if @task_id is null or @task_new_end is null  
+    begin 
+        raiserror('Invalid parameters', 16, 1)
+        return
+    end
+    if not exists (select 1 from [Tempus].[Task] where task_id = @task_id)
+    begin 
+        raiserror('The task doesn''t exist', 16, 1)
+        return
+    end
+    begin try 
+        begin transaction
+        update [Tempus].[Task] set task_end = @task_new_end where task_id = @task_id
+        commit
+    end try 
+
+    begin catch 
+        rollback 
+        declare @error_message nvarchar(2048)
+        set @error_message = 'Erro: '+Error_Message();
+        throw 51200, @error_message, 1  
+    end catch
+end
+
+
 go
 
 create or alter procedure [Tempus].[spUpdateWorkspaceName]

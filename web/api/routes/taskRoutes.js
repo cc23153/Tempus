@@ -9,5 +9,6 @@ router.patch('/description', taskController.patchTaskDescription)
 router.patch('/name', taskController.patchTaskName)
 router.patch('/situation', taskController.patchTaskSituation)
 router.patch('/category', taskController.patchTaskCategory)
+router.patch('/end', taskController.patchTaskEnd)
 
 module.exports = router
