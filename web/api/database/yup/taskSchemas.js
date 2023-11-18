@@ -70,5 +70,10 @@ exports.patchTaskSituation = yup.object().shape({
     task_situation: task_situation
 })
 
+exports.patchTaskCategory = yup.object().shape({
+    task_id: task_id,
+    task_category: task_category
+})
+
 
                     
