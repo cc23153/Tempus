@@ -1,6 +1,10 @@
 const yup = require('yup')
 
 const comment_id = yup.number()
+
+
+
+
                 .positive('comment_id must be a positive number')
                 .required('comment_id is required')
                 .defined('comment_id must be defined')
@@ -55,3 +59,7 @@ exports.deleteComment = yup.object().shape({
     comment_id : comment_id
 })
 
+exports.patchCommentContent = yup.object().shape({
+    comment_id : comment_id,
+    content : content
+})
