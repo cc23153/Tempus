@@ -160,3 +160,31 @@ exports.deleteComment = ('/', async(req, res) => {
 })
 
 
+exports.patchCommentContent = ('/', async(req, res) => {
+    const comment_id = req.body.comment_id
+    const content = req.body.content
+
+    await patchContentSchema.validate({comment_id, content})
+    .then(async() => {
+        if (!commentExist(comment_id)) {
+            res.status(400).json({
+                error: 'true', message: "Comment doesn't exist"
+            })
+            return
+        }
+        await prisma.$queryRaw`exec Tempus.spUpdateCommentContent
+            ${comment_id},
+            ${content}`
+        res.status(200).json({
+            error: 'false', message: "Comment succesfully updated"
+        })
+    })
+    .catch((err) => {
+        res.status(400).json({
+            error: 'true', message: `${err.message}`
+        })
+    })
+})
+
+
+module.exports
