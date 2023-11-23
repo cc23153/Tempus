@@ -36,7 +36,7 @@ exports.getWorkspace = (('/'), async (req, res) => {
         .then(async () => {
             const workspace = await workspaceExist(workspace_id)
             if (!workspace) {
-                res.status(400).json({ error: true, message: "Workspace doesn't exist" })
+                res.status(400).json({ error: 'true', message: "Workspace doesn't exist" })
                 return
             }
             res.status(200).json(workspace)
@@ -58,18 +58,18 @@ exports.postWorkspace = (('/'), async (req, res) => {
     await postSchema.validate( {workspace_name, workspace_description, workspace_admin, team_id} )
         .then(async () => {
             if (!userExist(workspace_admin)) {
-                res.status(400).json({ error: true, message: "User doesn't exist" })
+                res.status(400).json({ error: 'true', message: "User doesn't exist" })
                 return
             }
             if (!teamExist(team_id)) {
-                res.status(400).json({ error: true, message: "Team doesn't exist" })
+                res.status(400).json({ error: 'true', message: "Team doesn't exist" })
                 return
             }
         
             await prisma.$queryRaw`exec Tempus.spNewWorkspace 
                 ${workspace_name}, ${workspace_description},  
                 ${workspace_admin}, ${team_id}`
-            res.status(200).json({ error: false, message: "Workspace succesfully inserted" })
+            res.status(200).json({ error: 'false', message: "Workspace succesfully inserted" })
         })
         .catch((err) => {
             res.status(400).json({
@@ -91,18 +91,18 @@ exports.putWorkspace = (('/'), async (req, res) => {
             const user = await userExist(workspace_admin)
         
             if (!workspace) {
-                res.status(400).json({ error: true, message: "Workspace doesn't exist" })
+                res.status(400).json({ error: 'true', message: "Workspace doesn't exist" })
                 return
             }
             if (!user) {
-                res.status(400).json({ error: true, message: "User doesn't exist" })
+                res.status(400).json({ error: 'true', message: "User doesn't exist" })
                 return
             }
         
             await prisma.$queryRaw`exec Tempus.spUpdateWorkspace  
                 ${workspace_id}, ${workspace_name}, 
                 ${workspace_description}, ${workspace_admin}`
-            res.status(200).json({ error: false, message: "Workspace succesfully updated" })
+            res.status(200).json({ error: 'false', message: "Workspace succesfully updated" })
         })
         .catch((err) => {
             res.status(400).json({
@@ -119,12 +119,12 @@ exports.deleteWorkspace = (('/'), async (req, res) => {
         .then(async () => {
             const workspace = await workspaceExist(workspace_id)
             if (!workspace) {
-                res.status(400).json({ error: true, message: "Workspace doesn't exist" })
+                res.status(400).json({ error: 'true', message: "Workspace doesn't exist" })
                 return
             }
         
             await prisma.$queryRaw`exec Tempus.spDeleteWorkspace ${workspace_id}`
-            res.status(200).json({ error: false, message: "Workspace succesfully deleted" })
+            res.status(200).json({ error: 'false', message: "Workspace succesfully deleted" })
         })
         .catch((err) => {
             res.status(400).json({
@@ -141,12 +141,12 @@ exports.patchWorkspaceName = (('/'), async (req, res) => {
         .then(async () => {
             const workspace = await workspaceExist(workspace_id)
             if (!workspace) {
-                res.status(400).json({ error: true, message: "Workspace doesn't exist" })
+                res.status(400).json({ error: 'true', message: "Workspace doesn't exist" })
                 return
             }
             console.log(workspace_name)
             await prisma.$queryRaw`exec Tempus.spUpdateworkspaceName ${workspace_id}, ${workspace_name}`
-            res.status(200).json({ error: false, message: "Workspace succesfully updated" })
+            res.status(200).json({ error: 'false', message: "Workspace succesfully updated" })
         })
         .catch((err) => {
             res.status(400).json({
@@ -165,12 +165,12 @@ exports.patchWorkspaceDescription = (('/'), async (req, res) => {
         .then(async () => {
             const workspace = await workspaceExist(workspace_id)
             if (!workspace) {
-                res.status(400).json({ error: true, message: "Workspace doesn't exist" })
+                res.status(400).json({ error: 'true', message: "Workspace doesn't exist" })
                 return
             }
         
             await prisma.$queryRaw`exec Tempus.spUpdateworkspaceDescription ${workspace_id}, ${workspace_description}`
-            res.status(200).json({ error: false, message: "Workspace succesfully updated" })
+            res.status(200).json({ error: 'false', message: "Workspace succesfully updated" })
         })
         .catch((err) => {
             res.status(400).json({
@@ -189,16 +189,16 @@ exports.patchWorkspaceAdmin = (('/'), async (req, res) => {
             const workspace = await workspaceExist(workspace_id)
             const admin = await userExist(workspace_admin)
             if (!workspace) {
-                res.status(400).json({ error: true, message: "Workspace doesn't exist" })
+                res.status(400).json({ error: 'true', message: "Workspace doesn't exist" })
                 return
             }
             if (!admin) {
-                res.status(400).json({ error: true, message: "User doesn't exist" })
+                res.status(400).json({ error: 'true', message: "User doesn't exist" })
                 return
             }
         
             await prisma.$queryRaw`exec Tempus.spUpdateworkspaceAdmin ${workspace_id}, ${workspace_admin}`
-            res.status(200).json({ error: false, message: "Workspace succesfully updated" })
+            res.status(200).json({ error: 'false', message: "Workspace succesfully updated" })
         })
         .catch((err) => {
             res.status(400).json({
