@@ -25,6 +25,24 @@ exports.getTask = (('/'), async (req, res) => {
         })
 })
 
+exports.getTaskByWorkspace = (('/'), async (req, res) => {
+    const workspace_id = req.body.workspace_id
+
+    await getTask.validate({ workspace_id })
+        .then(async () => {
+            const task = await prisma.task.findMany({
+                where: {
+                    workspace: workspace_id
+                }
+            })
+            if (!task) {
+                res.status(400).json({ error: true, message: "The workspace doesn't have any task" })
+                return
+            }
+            res.status(200).json(task)
+        })
+})
+
 exports.postTask = (('/'), async (req, res) => {
     const task_situation = req.body.task_situation
     const task_name = req.body.task_name
