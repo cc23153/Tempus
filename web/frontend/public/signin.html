@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulário de Cadastro</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    #card {
+      width: 300px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 16px;
+      box-sizing: border-box;
+    }
+
+    button {
+      background-color: #4caf50;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<div id="app">
+  <div id="card">
+    <form @submit.prevent="submitForm">
+      <label for="username">Username:</label>
+      <input type="text" id="username" v-model="userData.username" required>
+
+      <label for="nickname">Nickname:</label>
+      <input type="text" id="nickname" v-model="userData.nickname" required>
+
+      <label for="email">Email:</label>
+      <input type="email" id="email" v-model="userData.email" required>
+
+      <label for="pwd">Senha:</label>
+      <input type="password" id="pwd" v-model="userData.pwd" required>
+
+      <button type="submit">Cadastrar</button>
+    </form>
+    <div id="result" style="display: flex;"></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+<script>
+    new Vue({
+      el: '#app',
+      data: {
+        userData: {
+          username: '',
+          nickname: '',
+          email: '',
+          pwd: ''
+        }
+      },
+      methods: {
+        submitForm() {
+          
+          const apiUrl = 'http://localhost:5050/a/signup';
+          const result = document.getElementById('result')
+  
+          fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(this.userData),
+          })
+          .then(response => {
+            if (!response.ok) {
+              result.innerText = 'Algo deu errado'
+              throw new Error('Erro ao cadastrar usuário');
+            }
+            return response.json();
+          })
+          .then(data => {
+            
+
+            
+            // document.cookie = `token=${data.token}; path=/`;
+            result.innerText = 'Usuário cadastrado com sucesso'
+            alert('Usuário cadastrado com sucesso:', data);
+            // Limpar o formulário ou redirecionar para outra página, se necessário
+            this.userData = {
+              username: '',
+              nickname: '',
+              email: '',
+              pwd: ''
+            };
+            console.log(JSON.stringify(data))
+          })
+          .catch(error => {
+            console.error('Erro:', error);
+          });
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>

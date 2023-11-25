@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    #login-container {
+      text-align: center;
+    }
+
+    #login-error {
+      color: red;
+    }
+
+    #login-success {
+      color: green;
+    }
+  </style>
+</head>
+<body>
+  <div id="login-container">
+    <h1>Login</h1>
+    <div id="login-error"></div>
+    <div id="login-success"></div>
+    <form id="login-form">
+      <label for="username">Username:</label>
+      <input type="text" id="username" name="username" required>
+
+      <br>
+
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" required>
+
+      <br>
+
+      <button type="button" onclick="login()">Login</button>
+    </form>
+  </div>
+
+  <script>
+    async function login() {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      const response = await fetch('http://localhost:5050/a/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          
+        },
+        body: JSON.stringify({
+          username: username,
+          pwd: password,
+        }),
+      });
+    //   const tokenCookie = document.cookie.split('; ').find(cookie => cookie.startsWith('token='));
+    // console.log('Valor do cookie "token":', tokenCookie ? tokenCookie.split('=')[1] : null);
+      const result = await response.json();
+
+      if (result.error == "false") {
+        document.getElementById('login-error').textContent = '';
+        document.getElementById('login-success').textContent = 'Usuário logado com sucesso!';
+        document.cookie = `token=${result.token}; path=/`;
+      } else {
+        document.getElementById('login-error').textContent = 'Erro: ' + result.message;
+        document.getElementById('login-success').textContent = '';
+      }
+    }
+  </script>
+</body>
+</html>

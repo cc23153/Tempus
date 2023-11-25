@@ -11,5 +11,8 @@ app.listen(PORT, () => {
 })
 
 app.get('/', (req, res) => {
-    res.send("<h1>Hello, World!</h1>")
+    res.sendFile('Z:\\Tempus\\web\\frontend\\public\\signin.html')
+})
+app.get('/login', (req, res) => {
+    res.sendFile('Z:\\Tempus\\web\\frontend\\src\\login.html')
 })
