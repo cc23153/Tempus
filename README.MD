@@ -10,6 +10,7 @@ O Tempus é uma aplicação web que oferece uma solução para gerenciar tarefas
 * Clone o repositório com o comando `git clone https://github.com/cc23153/Tempus.git`
 * Abra o terminal e navegue até a pasta `Tempus/web/api`.
 * Renomeie o arquivo `.env-example` para `.env` e substitua as informações do banco de dados conforme necessário.
+* Coloque alguma frase no SECRET
 * Execute o comando `npm install` para instalar as dependências.
 * Navegue até `web/api/database/prisma/` e execute `npx prisma migrate dev --name init`
 * No diretório `web/api/database/prisma/` execute `npx prisma generate`
