@@ -27,18 +27,15 @@ exports.signup = (('/'), async (req, res) => {
 
             await prisma.$queryRaw`exec Tempus.spNewUser ${username}, ${nickname}, ${email}, ${pwd_hash}, ${pwd_salt}`
 
+            const token = generateJWT({ username, email })
+            res.cookie('token', token, { httpOnly: true, maxAge: 604_800_000, secure: true })
             res.status(201).json({ error: 'false', message: 'User created successfully' });
-            console.log("aloo")
         })
         .catch((err) => {
             res.status(400).json({
                 error: 'true', message: `${err.message}`
             })
         })
-    // const token = generateJWT({ username, email })
-    // console.log(token)
-
-    
 })
 
 exports.login = (('/login'), async (req, res) => {
@@ -69,25 +66,22 @@ exports.login = (('/login'), async (req, res) => {
 
             if (!password) {
                 res.status(401).json({ error: 'true', message: 'Unauthorized' })
+                return
             }
-            else {
-                res.status(200).json({ error: 'false', message: 'Successful login' })
-            }
+
+            const token = generateJWT({ username })
+            res.cookie('token', token, { httpOnly: true, maxAge: 604_800_000, secure: true, })
+            res.status(200).json({ error: 'false', message: 'Successful login' })
 
         })
         .catch((err) => {
-            res.status(500)
+            res.status(400).json({error: 'true', message: `${err.message}`})
             console.log(err)
         })
 
 })
 
 exports.logout = (('/'), async (req, res) => {
-//     const tokenCookie = req.cookies.token;
-
-//   if (tokenCookie) {
-//     res.send(`Valor do Cookie 'token': ${tokenCookie}`);
-//   } else {
-//     res.json({msg: 'cookie not found'});
-//   }
+    res.cookie('token', '', { maxAge: 10 })
+    res.status(200).json({ error: false, message: 'success' })
 })

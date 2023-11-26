@@ -1,4 +1,5 @@
 const express = require('express')
+const path = require('path')
 const app = express()
 
 const PORT = 5000
@@ -11,8 +12,8 @@ app.listen(PORT, () => {
 })
 
 app.get('/', (req, res) => {
-    res.sendFile('Z:\\Tempus\\web\\frontend\\public\\signin.html')
+    res.sendFile(path.join(__dirname, '/public/signin.html'))
 })
 app.get('/login', (req, res) => {
-    res.sendFile('Z:\\Tempus\\web\\frontend\\src\\login.html')
+    res.sendFile(path.join(__dirname, '/src/login.html'))
 })

@@ -55,25 +55,17 @@
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          
         },
         body: JSON.stringify({
           username: username,
           pwd: password,
         }),
+        credentials: 'include'
       });
-    //   const tokenCookie = document.cookie.split('; ').find(cookie => cookie.startsWith('token='));
-    // console.log('Valor do cookie "token":', tokenCookie ? tokenCookie.split('=')[1] : null);
       const result = await response.json();
-
-      if (result.error == "false") {
-        document.getElementById('login-error').textContent = '';
-        document.getElementById('login-success').textContent = 'Usuário logado com sucesso!';
-        document.cookie = `token=${result.token}; path=/`;
-      } else {
-        document.getElementById('login-error').textContent = 'Erro: ' + result.message;
-        document.getElementById('login-success').textContent = '';
-      }
+     
+        alert(result.message)
+     
     }
   </script>
 </body>

@@ -1,7 +1,8 @@
 const router  = require('express').Router()
 const userController = require('../controllers/userController')
+const validateToken = require('../middlewares/auth')
 
-router.get('/',userController.getUser)
+router.get('/', validateToken, userController.getUser)
 router.get('/getuserteams',userController.getUserTeams)
 router.post('/', userController.postUser)
 router.put('/', userController.putUser)

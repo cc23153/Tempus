@@ -90,6 +90,7 @@
               'Content-Type': 'application/json',
             },
             body: JSON.stringify(this.userData),
+            credentials: "include"
           })
           .then(response => {
             if (!response.ok) {
@@ -99,10 +100,6 @@
             return response.json();
           })
           .then(data => {
-            
-
-            
-            // document.cookie = `token=${data.token}; path=/`;
             result.innerText = 'Usuário cadastrado com sucesso'
             alert('Usuário cadastrado com sucesso:', data);
             // Limpar o formulário ou redirecionar para outra página, se necessário
