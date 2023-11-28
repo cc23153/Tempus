@@ -1,7 +1,6 @@
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
 const { getComment, postComment, putComment, deleteComment, patchCommentContent } = require('../database/yup/commentSchemas')
-const { postSchema, putSchema, deleteSchema } = require('../database/yup/workspaceSchemas')
 
 const commentExist = async(comment_id) => {
     const comment = await prisma.comment.findUnique({
@@ -34,7 +33,7 @@ const userExist = async(user_id) => {
 exports.getComment = (('/'), async(req, res) => {
     const comment_id = req.body.comment_id
 
-    await getSchema.validate({comment_id})
+    await getComment.validate({comment_id})
         .then(async() => {
             const comment = await commentExist(comment_id)
             if (!comment) {
@@ -59,7 +58,7 @@ exports.postComment = (('/'), async(req, res) => {
     const comment_datetime = req.body.comment_datetime
     const user_id = req.body.user_id
 
-    await postSchema.validate({task_id, content, comment_datetime, user_id})
+    await postComment.validate({task_id, content, comment_datetime, user_id})
     .then(async() => {
         if (!taskExist(task_id)) {
             res.status(400).json({
@@ -97,7 +96,7 @@ exports.putComment = ('/', async(req, res) => {
     const comment_datetime = req.body.comment_datetime
     const user_id = req.body.user_id
 
-    await putSchema.validate({comment_id, task_id, content, comment_datetime, user_id})
+    await putComment.validate({comment_id, task_id, content, comment_datetime, user_id})
     .then(async() => {
         if (!commentExist(comment_id)) {
             res.status(400).json({
@@ -138,7 +137,7 @@ exports.putComment = ('/', async(req, res) => {
 exports.deleteComment = ('/', async(req, res) => {
     const comment_id = req.body.comment_id
 
-    await deleteSchema.validate({comment_id})
+    await deleteComment.validate({comment_id})
     .then(async() => {
         if (!commentExist(comment_id)) {
             res.status(400).json({
@@ -164,7 +163,7 @@ exports.patchCommentContent = ('/', async(req, res) => {
     const comment_id = req.body.comment_id
     const content = req.body.content
 
-    await patchContentSchema.validate({comment_id, content})
+    await patchCommentContent.validate({comment_id, content})
     .then(async() => {
         if (!commentExist(comment_id)) {
             res.status(400).json({
