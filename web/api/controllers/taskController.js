@@ -1,6 +1,6 @@
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
-const { getTask, postTask, deleteTask, patchTaskCategory, patchTaskDescription, patchTaskName, patchTaskSituation, patchTaskEnd } = require('../database/yup/taskSchemas')
+const { getTask, postTask, putTask, deleteTask, patchTaskCategory, patchTaskDescription, patchTaskName, patchTaskSituation, patchTaskEnd } = require('../database/yup/taskSchemas')
 
 const taskExist = async (task_id) => {
     const task = await prisma.task.findUnique({
@@ -45,35 +45,35 @@ exports.getTaskByWorkspace = (('/'), async (req, res) => {
 
 // Não está funcionando
 exports.postTask = (('/'), async (req, res) => {
-    const task_situation = req.body.task_situation
     const task_name = req.body.task_name
     const task_description = req.body.task_description
+    const task_situation = req.body.task_situation
+    const task_image = req.body.task_image
     const workspace_id = req.body.workspace_id
     const task_begin = new Date(req.body.task_begin)
     const task_end = new Date(req.body.task_end)
     const task_category = (req.body.task_category)
 
-    await postTask.validate({ task_situation, task_name, task_description, workspace_id, task_begin, task_end, task_category })
+    await postTask.validate({ task_name, task_description, task_situation, task_image, workspace_id, task_begin, task_end, task_category })
         .then(async () => {
-            const workspaceExist = async (task_id) => {
-                const task = await prisma.task.findUnique({
+            const workspaceExist = async (workspace_id) => {
+                const task = await prisma.workspace.findUnique({
                     where: {
-                        task_id: task_id
+                        workspace_id: workspace_id
                     }
                 })
-                return task
+                return workspace
             }
 
             if (!workspaceExist) {
                 res.status(400).json({ error: true, message: "Workspace doesn't exist" })
                 return
             }
-
-
+            
             await prisma.$queryRaw`exec Tempus.spNewTask 
             ${task_name}, ${task_description}, 
             ${workspace_id}, ${task_situation}, 
-            ${task_begin.toISOString()}, ${task_end.toISOString()}, ${task_category}`
+            ${task_begin}, ${task_end}, ${task_category}`
             res.status(200).json({ error: false, message: "Task succesfully inserted" })
 
         })
@@ -87,23 +87,24 @@ exports.postTask = (('/'), async (req, res) => {
 
 exports.putTask = (('/'), async (req, res) => {
     const task_id = req.body.task_id
-    const task_situation = req.body.task_situation
     const task_name = req.body.task_name
     const task_description = req.body.task_description
+    const task_situation = req.body.task_situation
+    const task_image = req.body.task_image
     const workspace_id = req.body.workspace_id
     const task_begin = new Date(req.body.task_begin)
     const task_end = new Date(req.body.task_end)
-    const task_category = req.body.task_category
+    const task_category = (req.body.task_category)
 
-    await postTask.validate({ task_situation, task_name, task_description, workspace_id, task_begin, task_end, task_category })
+    await putTask.validate({ task_id, task_name, task_description, task_situation, task_image, workspace_id, task_begin, task_end, task_category })
         .then(async () => {
-            const workspaceExist = async (task_id) => {
-                const task = await prisma.task.findUnique({
+            const workspaceExist = async (workspace_id) => {
+                const workspace = await prisma.workspace.findUnique({
                     where: {
-                        task_id: task_id
+                        workspace_id: workspace_id
                     }
                 })
-                return task
+                return workspace
             }
 
             if (!workspaceExist) {
@@ -112,10 +113,11 @@ exports.putTask = (('/'), async (req, res) => {
             }
 
             await prisma.$queryRaw`exec Tempus.spUpdateTask 
-            ${task_id}, ${task_name}, 
-            ${task_description}, ${workspace_id}, 
-            ${task_situation}, ${task_begin}, 
-            ${task_end}, ${task_category}`
+                ${task_id}, ${task_name}, 
+                ${task_description}, ${task_situation}, 
+                ${task_image}, ${workspace_id}, 
+                ${task_begin}, ${task_end}, 
+                ${task_category}`
             res.status(200).json({ error: false, message: "Task succesfully inserted" })
 
         })
