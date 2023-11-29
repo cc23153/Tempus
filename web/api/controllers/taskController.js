@@ -56,7 +56,7 @@ exports.postTask = (('/'), async (req, res) => {
     await postTask.validate({ task_name, task_description, task_situation, task_image, workspace_id, task_begin, task_end, task_category })
         .then(async () => {
             const workspaceExist = async (workspace_id) => {
-                const task = await prisma.workspace.findUnique({
+                const workspace = await prisma.workspace.findUnique({
                     where: {
                         workspace_id: workspace_id
                     }
