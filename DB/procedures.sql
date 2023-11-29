@@ -11,6 +11,7 @@ create or alter procedure [Tempus].[spNewTask]
     @task_category int
 as
 begin
+    set nocount on
     declare @task_without_name_msg varchar(50) = 'Tarefa sem nome'
     if @task_name = ''
     begin
@@ -40,6 +41,7 @@ create or alter procedure [Tempus].[spNewComment]
     @user_id int
 as
 begin
+    set nocount on
     if @comment_datetime is null 
     begin 
         set @comment_datetime = getdate()
@@ -75,6 +77,7 @@ create or alter procedure [Tempus].[spNewWorkspace]
     @team_id int
 as
 begin
+    set nocount on
     if @workspace_name is null or
         @workspace_description is null or
         @workspace_admin is null or
@@ -108,6 +111,7 @@ create or alter procedure [Tempus].[spNewCategory]
     @category_description nvarchar(128)
 as
 begin
+    set nocount on
     if @category_name is null or @category_description is null 
     begin 
         RAISERROR('Invalid parameters', 16, 1)
@@ -142,6 +146,7 @@ create or alter procedure [Tempus].[spAddTeamMember]
     @user_id int
 as
 begin
+    set nocount on
     if @team_id is null or @user_id is null 
     begin 
         RAISERROR('Invalid parameters', 16, 1)
@@ -177,6 +182,7 @@ create or alter procedure [Tempus].[spNewTeam]
     @team_name nvarchar(50)
 as
 begin
+    set nocount on
     if @team_name is null 
     begin 
         RAISERROR('Invalid parameters', 16, 1)
@@ -208,6 +214,7 @@ create or alter procedure [Tempus].[spNewUser]
     @password_salt varchar(64)
 as
 begin
+    set nocount on
     if @username is null or @nickname is null or @email is null 
        or @password_hash is null or @password_salt is null
     begin 
@@ -238,6 +245,7 @@ create or alter procedure [Tempus].[spDeleteTask]
     @task_id int
 as
 begin
+    set nocount on
     if @task_id is null 
     begin 
         raiserror('Task_id can''t be null', 16, 1)
@@ -269,6 +277,7 @@ create or alter procedure [Tempus].[spDeleteComment]
     @comment_id int
 as
 begin
+    set nocount on
     if @comment_id is null 
     begin 
         raiserror('Comment_id can''t be null', 16, 1)
@@ -299,6 +308,7 @@ create or alter procedure [Tempus].[spDeleteWorkspace]
     @workspace_id int
 as
 begin
+    set nocount on
     if @workspace_id is null 
     begin 
         raiserror('Workspace_id can''t be null', 16, 1)
@@ -329,6 +339,7 @@ create or alter procedure [Tempus].[spDeleteCategory]
     @category_id int
 as
 begin
+    set nocount on
     if @category_id is null 
     begin 
         raiserror('Category_id can''t be null', 16, 1)
@@ -360,6 +371,7 @@ create or alter procedure [Tempus].[spRemoveTeamMember]
     @team_id int
 as
 begin
+    set nocount on
     if @user_id is null or @team_id is null
     begin 
         raiserror('Invalid parameters', 16, 1)
@@ -390,6 +402,7 @@ create or alter procedure [Tempus].[spDeleteTeam]
     @team_id int
 as
 begin
+    set nocount on
     if @team_id is null 
     begin 
         raiserror('Team_id can''t be null', 16, 1)
@@ -420,6 +433,7 @@ create or alter procedure [Tempus].[spDeleteUser]
     @user_id int
 as
 begin
+    set nocount on
     if @user_id is null 
     begin 
         raiserror('User_id can''t be null', 16, 1)
@@ -452,6 +466,7 @@ create or alter procedure [Tempus].[spUpdateCommentContent]
     @content ntext
 as
 begin
+    set nocount on
     if @comment_id is null or @content is null
     begin
         raiserror('Invalid parameters', 16, 1)
@@ -485,6 +500,7 @@ create or alter procedure [Tempus].[spUpdateTaskName]
     @task_new_name nvarchar(50)
 as
 begin
+    set nocount on
     if @task_id is null or @task_new_name is null  
     begin 
         raiserror('Invalid parameters', 16, 1)
@@ -516,6 +532,7 @@ create or alter procedure [Tempus].[spUpdateTaskDescription]
     @task_new_description nvarchar(512)
 as
 begin
+    set nocount on
     if @task_id is null or @task_new_description is null  
     begin 
         raiserror('Invalid parameters', 16, 1)
@@ -547,6 +564,7 @@ create or alter procedure [Tempus].[spUpdateTaskSituation]
     @task_new_situation nvarchar(50)
 as
 begin
+    set nocount on
     if @task_id is null or @task_new_situation is null  
     begin 
         raiserror('Invalid parameters', 16, 1)
@@ -578,6 +596,7 @@ create or alter procedure [Tempus].[spUpdateTaskCategory]
     @task_new_category nvarchar(50)
 as
 begin
+    set nocount on
     if @task_id is null or @task_new_category is null  
     begin 
         raiserror('Invalid parameters', 16, 1)
@@ -614,6 +633,7 @@ create or alter procedure [Tempus].[spUpdateTaskEnd]
     @task_new_end datetime
 as
 begin
+    set nocount on
     if @task_id is null or @task_new_end is null  
     begin 
         raiserror('Invalid parameters', 16, 1)
@@ -646,6 +666,7 @@ create or alter procedure [Tempus].[spUpdateWorkspaceName]
     @workspace_new_name nvarchar(50)
 as
 begin
+    set nocount on
     if @workspace_id is null or @workspace_new_name is null  
     begin 
         raiserror('Invalid parameters', 16, 1)
@@ -677,6 +698,7 @@ create or alter procedure [Tempus].[spUpdateWorkspaceDescription]
     @workspace_new_description nvarchar(128)
 as
 begin
+    set nocount on
     if @workspace_id is null or @workspace_new_description is null  
     begin 
         raiserror('Invalid parameters', 16, 1)
@@ -707,6 +729,7 @@ create or alter procedure [Tempus].[spUpdateWorkspaceAdmin]
     @workspace_new_admin int
 as
 begin
+    set nocount on
     if @workspace_id is null or @workspace_new_admin is null  
     begin 
         raiserror('Invalid parameters', 16, 1)
@@ -743,6 +766,7 @@ create or alter procedure [Tempus].[spUpdateCategoryName]
     @category_new_name nvarchar(50)
 as
 begin
+    set nocount on
     if @category_id is null or @category_new_name is null  
     begin 
         raiserror('Invalid parameters', 16, 1)
@@ -775,7 +799,8 @@ create or alter procedure [Tempus].[spUpdateCategoryContent]
     @category_new_content nvarchar(128)
 as
 begin
-     if @category_id is null or @category_new_content is null  
+    set nocount on
+    if @category_id is null or @category_new_content is null  
     begin 
         raiserror('Invalid parameters', 16, 1)
         return
@@ -807,6 +832,7 @@ create or alter procedure [Tempus].[spUpdateTeamName]
     @team_new_name nvarchar(50)
 as
 begin
+    set nocount on
     if @team_id is null or @team_new_name is null  
     begin 
         raiserror('Invalid parameters', 16, 1)
@@ -839,6 +865,7 @@ create or alter procedure [Tempus].[spUpdateUserNickname]
     @user_new_nickname nvarchar(40)
 as
 begin
+    set nocount on
     if @user_id is null or @user_new_nickname is null  
     begin 
         raiserror('Invalid parameters', 16, 1)
@@ -871,6 +898,7 @@ create or alter procedure [Tempus].[spUpdateUserEmail]
     @user_new_email varchar(40)
 as
 begin
+    set nocount on
     if @user_id is null or @user_new_email is null  
     begin 
         raiserror('Invalid parameters', 16, 1)
@@ -902,6 +930,7 @@ create or alter procedure [Tempus].[spUpdateUsername]
     @user_new_username varchar(40)
 as
 begin
+    set nocount on
     if @user_id is null or @user_new_username is null  
     begin 
         raiserror('Invalid parameters', 16, 1)
@@ -937,6 +966,7 @@ create or alter procedure [Tempus].[spUpdateUserPassword]
     @user_id int, @password_hash varchar(64), @password_salt varchar(64)
 as
 begin 
+    set nocount on
     if @user_id is null or @password_hash is null or @password_salt is null 
     begin 
         raiserror('Invalid parameters', 16, 1)
@@ -969,6 +999,7 @@ create or alter procedure [Tempus].[spUpdateUserProfilePicture]
     @user_id int, @profile_picture varchar(2000)
 as
 begin 
+    set nocount on
     if @user_id is null or @profile_picture is null 
     begin 
         raiserror('Invalid parameters', 16, 1)
@@ -1002,6 +1033,7 @@ create or alter procedure [Tempus].[spUpdateUser]
     @profile_picture varchar(2000) 
 as
 begin
+    set nocount on
     if @user_id is null or @username is null or @nickname is null or @email is null  
     begin 
         raiserror('Invalid parameters', 16, 1)
@@ -1045,6 +1077,7 @@ create or alter procedure [Tempus].[spUpdateTask]
     @task_category int
 as
 begin
+    set nocount on
     if @task_id is null or @task_name is null 
         or @task_content is null or @workspace_id is null 
         or @task_situation is null or @task_begin is null 
@@ -1091,6 +1124,7 @@ create or alter procedure [Tempus].[spUpdateCategory]
     @category_description nvarchar(128)
 as
 begin
+    set nocount on
     if @category_id is null or @category_name is null 
         or @category_description is null
     begin 
@@ -1129,6 +1163,7 @@ create or alter procedure [Tempus].[spUpdateComment]
     @user_id int
 as
 begin
+    set nocount on
     if  @comment_id is null or
         @task_id is null or
         @content is null or
@@ -1184,6 +1219,7 @@ create or alter procedure [Tempus].[spUpdateWorkspace]
     @workspace_admin int
 as
 begin
+    set nocount on
     if @workspace_id is null or @workspace_name is null 
         or @workspace_description is null or @workspace_admin is null
     begin 
@@ -1226,6 +1262,7 @@ create or alter procedure [Tempus].[spNumMembersTeam]
     @num int output
 as
 begin
+    set nocount on
     select @num = count([user_id])
     from [Tempus].[TeamMembers]
     where team_id = @team_id
