@@ -15,6 +15,9 @@ const workspace_id =  yup.number().positive('workspace_id must be a positive num
 const task_situation = yup.string().strict(true)
                        .typeError('task_situation must be a string').required('task_situation is required')
                        .nonNullable().min(5).max(50) 
+const task_image = yup.string().strict(true)
+                   .typeError('task_image must be a string')
+                   .nullable().max(2000)
 const task_begin = yup.date()
                    .nonNullable('task_begin can\'t be null').required('task_begin is required')
                    .typeError('task_begin must be a date').defined('task_begin must be defined')
@@ -26,14 +29,16 @@ const task_category =  yup.number().positive('task_category must be a positive n
                  .nonNullable('task_category can\'t be null')
 
 
+
 exports.getTask = yup.object().shape({
     task_id : task_id
 })
 
 exports.postTask = yup.object().shape({
-    task_situation: task_situation,
     task_name: task_name,
     task_description: task_description,
+    task_situation: task_situation,
+    task_image: task_image,
     workspace_id: workspace_id,
     task_begin: task_begin,
     task_end: task_end,
@@ -42,9 +47,10 @@ exports.postTask = yup.object().shape({
 
 exports.putTask = yup.object().shape({
     task_id: task_id,
-    task_situation: task_situation,
     task_name: task_name,
     task_description: task_description,
+    task_situation: task_situation,
+    task_image: task_image,
     workspace_id: workspace_id,
     task_begin: task_begin,
     task_end: task_end,
@@ -78,6 +84,11 @@ exports.patchTaskCategory = yup.object().shape({
 exports.patchTaskEnd = yup.object().shape({
     task_id: task_id,
     task_end: task_end
+})
+
+exports.patchTaskImage = yup.object().shape({
+    task_id: task_id,
+    task_image: task_image
 })
 
                     
