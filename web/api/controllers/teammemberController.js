@@ -28,17 +28,38 @@ exports.postTeamMember = (('/'), async (req, res) => {
 
     await postTeamMemberSchema.validate({ user_id, team_id })
     .then(async () => {
-        const tm = await prisma.teamMembers.findUnique({
+        const user = await prisma.user.findUnique({
+            where: {
+                user_id: user_id
+            }
+        })
+        if(!user){
+            res.status(404).json({error: true, message: 'user not found'})
+            return
+        }
+        
+        const team = await prisma.team.findUnique({
+            where: {
+                team_id: team_id
+            }
+        })
+        if(!team){
+            res.status(404).json({error: true, message: 'team not found'})
+            return
+        }
+
+        const tm = await prisma.teamMembers.findFirst({
             where: {
                 user_id: user_id,
                 team_id: team_id
             }
         })
-        if(!tm){
+        if(tm){
             res.status(409).json({error: true, message: 'record already exist\'s'})
             return
         }
-        await prisma.$queryRaw`exec Tempus.spAddTeamMember ${user_id}, ${team_id}`
+        await prisma.$queryRaw`exec Tempus.spAddTeamMember ${team_id}, ${user_id}`
+        res.status(201).json({error: false, message: 'succesfully added'})
     })
     .catch((err) => {
         res.status(400).json({
@@ -74,4 +95,4 @@ exports.deleteTeamMember = (('/'), async (req, res) => {
 })
 
 
-module.exports = teammemberController
+module.exports
