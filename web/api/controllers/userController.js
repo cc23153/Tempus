@@ -24,15 +24,15 @@ const userExistsByUsername = async (username) => {
 exports.getUser = (('/'), async (req, res) => {
     const username = req.body.username
     await getUserSchema.validate({ username })
-        .then(async function () {
-            const response = await userExistsByUsername(req.body.username)
-            if (!response) {
+        .then(async() => {
+            const user = await userExistsByUsername(req.body.username)
+            if (!user) {
                 res.status(400).json({
                     error: 'true', message: 'User doesn\'t exist'
                 })
                 return
             }
-            res.status(200).json(response)
+            res.status(200).json({error: 'false', user})
         })
         .catch((err) => {
             res.status(400).json({
