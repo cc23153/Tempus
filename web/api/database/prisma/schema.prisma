@@ -9,85 +9,86 @@ datasource db {
 }
 
 model Category {
-  category_id          Int     @id(map: "PK__Category__D54EE9B45458E319") @default(autoincrement())
+  category_id          Int     @id(map: "PK__Category__D54EE9B46C82FF34") @default(autoincrement())
   category_name        String  @db.NVarChar(50)
   category_description String? @db.NVarChar(128)
   Task                 Task[]
 }
 
 model Comment {
-  comment_id       Int      @id(map: "PK__Comment__E7957687B4172E74") @default(autoincrement())
+  comment_id       Int      @id(map: "PK__Comment__E7957687F8412CE1") @default(autoincrement())
   task_id          Int
   content          String   @db.NText
   comment_datetime DateTime @db.DateTime
   user_id          Int
   Task             Task     @relation(fields: [task_id], references: [task_id], onUpdate: NoAction, map: "fk_task_id")
-  User             User     @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction, map: "fkUserId")
+  User             User     @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "fkUserId")
 }
 
 model Task {
-  task_id        Int       @id(map: "PK__Task__0492148D82BFA1D2") @default(autoincrement())
+  task_id        Int       @id(map: "PK__Task__0492148DCDD006AF") @default(autoincrement())
   task_name      String    @db.NVarChar(50)
   task_content   String?   @db.NVarChar(512)
-  workspace_id   Int
   task_situation String    @db.NVarChar(50)
+  task_image     String?   @db.VarChar(2000)
+  workspace_id   Int
   task_begin     DateTime  @db.DateTime
   task_end       DateTime  @db.DateTime
   task_category  Int
   Comment        Comment[]
-  Category       Category  @relation(fields: [task_category], references: [category_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_task_category")
-  Workspace      Workspace @relation(fields: [workspace_id], references: [workspace_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_workspace_id")
+  Category       Category  @relation(fields: [task_category], references: [category_id], onUpdate: NoAction, map: "fk_task_category")
+  Workspace      Workspace @relation(fields: [workspace_id], references: [workspace_id], onUpdate: NoAction, map: "fk_workspace_id")
 }
 
 model Team {
-  team_id     Int           @id(map: "PK__Team__F82DEDBCC94454CE") @default(autoincrement())
+  team_id     Int           @id(map: "PK__Team__F82DEDBCA7D665CA") @default(autoincrement())
   team_name   String        @db.NVarChar(50)
   TeamMembers TeamMembers[]
   Workspace   Workspace[]
 }
 
 model TeamMembers {
-  teammembers_id Int  @id(map: "PK__TeamMemb__009B24DFC030DE9E") @default(autoincrement())
+  teammembers_id Int  @id(map: "PK__TeamMemb__009B24DFB42D9206") @default(autoincrement())
   team_id        Int
   user_id        Int
-  Team           Team @relation(fields: [team_id], references: [team_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_team_id")
-  User           User @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user_id")
+  Team           Team @relation(fields: [team_id], references: [team_id], onUpdate: NoAction, map: "fk_team_id")
+  User           User @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "fk_user_id")
 }
 
 model User {
-  user_id           Int           @id(map: "PK__User__B9BE370F92593289") @default(autoincrement())
-  username          String        @unique(map: "UQ__User__F3DBC572C2DF5078") @db.NVarChar(40)
+  user_id           Int           @id(map: "PK__User__B9BE370F3226DC41") @default(autoincrement())
+  username          String        @unique(map: "UQ__User__F3DBC57293EFE6B0") @db.VarChar(40)
   nickname          String        @db.NVarChar(40)
-  email             String        @unique(map: "UQ__User__AB6E61643E3B0FBB") @db.VarChar(128)
+  email             String        @unique(map: "UQ__User__AB6E61643BC69653") @db.VarChar(128)
   password_hash     String        @db.VarChar(64)
   password_salt     String        @db.VarChar(64)
   register_datetime DateTime      @db.DateTime
+  profile_picture   String?       @db.VarChar(2000)
   Comment           Comment[]
   TeamMembers       TeamMembers[]
   Workspace         Workspace[]
 }
 
 model Workspace {
-  workspace_id          Int    @id(map: "PK__Workspac__7C58AC0B0F70E6CF") @default(autoincrement())
+  workspace_id          Int    @id(map: "PK__Workspac__7C58AC0B5CE5FECC") @default(autoincrement())
   workspace_name        String @db.NVarChar(50)
   workspace_description String @db.NVarChar(128)
   team_id               Int
   workspace_admin       Int
   Task                  Task[]
-  User                  User   @relation(fields: [workspace_admin], references: [user_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_workspace_admin")
-  Team                  Team   @relation(fields: [team_id], references: [team_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_workspace_team_id")
+  User                  User   @relation(fields: [workspace_admin], references: [user_id], onUpdate: NoAction, map: "fk_workspace_admin")
+  Team                  Team   @relation(fields: [team_id], references: [team_id], onUpdate: NoAction, map: "fk_workspace_team_id")
 }
 
 view TasksWithComments {
-  task_id    Int @unique
+  task_id    Int    @unique
   task_name  String @db.NVarChar(50)
   comment_id Int
   content    String @db.NText
-
 }
 
 view UserTeams {
-  team_id   Int @unique
+  team_id   Int    @unique
   team_name String @db.NVarChar(50)
   user_id   Int
   username  String @db.NVarChar(40)
