@@ -14,7 +14,7 @@ const team_name = yup.string()
                 .min(0)
 
 
-exports.getTeamSchema = yup.object().shape({
+exports.getTeam = yup.object().shape({
     team_id : team_id
 })
 

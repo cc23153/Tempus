@@ -1,3 +1,5 @@
+// os métodos do TEAM estão funcionando
+
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
 const { getTeam, postTeam, putTeam, deleteTeam } = require('../database/yup/teamSchemas')
@@ -11,6 +13,7 @@ const teamExists = async(team_id) => {
     return team
 }
 
+// está funcionando
 exports.getTeam = (('/'), async(req, res) => {
     const team_id = req.body.team_id
 
@@ -32,6 +35,7 @@ exports.getTeam = (('/'), async(req, res) => {
         })
 })
 
+// está funcionando
 exports.postTeam = (('/'), async(req, res) => {
     const team_name = req.body.team_name
 
@@ -49,6 +53,7 @@ exports.postTeam = (('/'), async(req, res) => {
         })
 })
 
+// está funcionando
 exports.putTeam = (('/'), async(req, res) => {
     const team_id = req.body.team_id
     const team_name = req.body.team_name
@@ -62,7 +67,7 @@ exports.putTeam = (('/'), async(req, res) => {
                 })
                 return
             }
-            await prisma.$queryRaw`exec Tempus.spUpdateTeam
+            await prisma.$queryRaw`exec Tempus.spUpdateTeamName
                 ${team_id},
                 ${team_name}`
             res.status(200).json({
@@ -76,6 +81,7 @@ exports.putTeam = (('/'), async(req, res) => {
         })
 })
 
+// está funcionando
 exports.deleteTeam = (('/'), async(req, res) => {
     const team_id = req.body.team_id
 

@@ -11,8 +11,6 @@ const taskExist = async (task_id) => {
     return task
 }
 
-const workspaceExist
-
 exports.getTask = (('/'), async (req, res) => {
     const task_id = req.body.task_id
 
@@ -45,6 +43,7 @@ exports.getTaskByWorkspace = (('/'), async (req, res) => {
         })
 })
 
+// Não está funcionando
 exports.postTask = (('/'), async (req, res) => {
     const task_situation = req.body.task_situation
     const task_name = req.body.task_name
@@ -56,8 +55,8 @@ exports.postTask = (('/'), async (req, res) => {
 
     await postTask.validate({ task_situation, task_name, task_description, workspace_id, task_begin, task_end, task_category })
         .then(async () => {
-            const workspaceExist = async (workspace_id) => {
-                const task = await prisma.task.taskExist({
+            const workspaceExist = async (task_id) => {
+                const task = await prisma.task.findUnique({
                     where: {
                         task_id: task_id
                     }
@@ -74,7 +73,7 @@ exports.postTask = (('/'), async (req, res) => {
             await prisma.$queryRaw`exec Tempus.spNewTask 
             ${task_name}, ${task_description}, 
             ${workspace_id}, ${task_situation}, 
-            ${task_begin}, ${task_end}, ${task_category}`
+            ${task_begin.toISOString()}, ${task_end.toISOString()}, ${task_category}`
             res.status(200).json({ error: false, message: "Task succesfully inserted" })
 
         })
