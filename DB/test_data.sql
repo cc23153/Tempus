@@ -23,7 +23,7 @@ exec Tempus.spAddTeamMember 1, 1
 exec Tempus.spAddTeamMember 2, 1
 exec Tempus.spAddTeamMember 2, 7
 
-select * from [Tempus].[UserTeams] where user_id = 1
+select * from [Tempus].[TeamMembers] where user_id = 1
 
 -- Select all
 select * from [Tempus].[User]

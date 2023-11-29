@@ -3,8 +3,9 @@
 create or alter procedure [Tempus].[spNewTask]
     @task_name nvarchar(50),
     @task_content nvarchar(512),
-    @workspace_id int,
     @task_situation nvarchar(50),
+    @task_image varchar(2000),
+    @workspace_id int,
     @task_begin datetime,
     @task_end datetime,
     @task_category int
@@ -15,11 +16,12 @@ begin
     begin
         set @task_name = @task_without_name_msg
     end
+
     begin try
         begin transaction 
-        insert into [Tempus].[Task] (task_name, task_content, workspace_id, task_situation, task_begin, task_end, task_category)
+        insert into [Tempus].[Task] (task_name, task_content, task_situation, task_image, workspace_id,  task_begin, task_end, task_category)
         values
-            (@task_name, @task_content, @workspace_id, @task_situation, @task_begin, @task_end, @task_category)
+            (@task_name, @task_content, @task_situation, @task_image, @workspace_id, @task_begin, @task_end, @task_category)
         commit
     end try 
     begin catch
@@ -926,11 +928,43 @@ begin
     end catch
 end
 
+go
+
+create or alter procedure [Tempus].[spUpdateUserProfilePicture]
+    @user_id int, @profile_picture varchar(2000)
+as
+begin 
+    if @user_id is null or @profile_picture is null 
+    begin 
+        raiserror('Invalid parameters', 16, 1)
+        return
+    end
+    if not exists (select 1 from [Tempus].[User] where user_id = @user_id)
+    begin 
+        raiserror('The user doesn''t exist', 16, 1)
+        return
+    end
+    begin try
+        begin transaction 
+        update [Tempus].[User] 
+        set profile_picture = @profile_picture  
+        where user_id = @user_id
+        commit 
+    end try
+
+    begin catch
+        rollback 
+        declare @error_message nvarchar(2048)
+        set @error_message = 'Erro: '+Error_Message();
+        throw 51200, @error_message, 1 
+    end catch
+end
+
 go 
 create or alter procedure [Tempus].[spUpdateUser]
-    @user_id int,
-    @username nvarchar(40),
-    @nickname nvarchar(40), @email varchar(40) 
+    @user_id int, @username nvarchar(40),
+    @nickname nvarchar(40), @email varchar(40),
+    @profile_picture varchar(2000) 
 as
 begin
     if @user_id is null or @username is null or @nickname is null or @email is null  
@@ -950,7 +984,7 @@ begin
     end
     begin try 
         begin transaction
-        update [Tempus].[User] set username = @username, nickname = @nickname, email = @email where user_id = @user_id
+        update [Tempus].[User] set username = @username, nickname = @nickname, email = @email, profile_picture = @profile_picture where user_id = @user_id
         commit
     end try 
 
@@ -968,8 +1002,9 @@ create or alter procedure [Tempus].[spUpdateTask]
     @task_id int,
     @task_name nvarchar(50),
     @task_content nvarchar(512),
-    @workspace_id int,
     @task_situation nvarchar(50),
+    @task_image varchar(2000),
+    @workspace_id int,
     @task_begin datetime,
     @task_end datetime,
     @task_category int
@@ -998,9 +1033,9 @@ begin
         begin transaction
         update [Tempus].[Task] 
             set task_name = @task_name, task_content = @task_content, 
-                workspace_id = @workspace_id, task_situation = @task_situation, 
-                task_begin = @task_begin, task_end = @task_end, 
-                task_category = @task_category 
+                task_situation = @task_situation, task_image = @task_image,
+                workspace_id = @workspace_id, task_begin = @task_begin, 
+                task_end = @task_end, task_category = @task_category 
             where task_id = @task_id
         commit
     end try 
@@ -1051,7 +1086,6 @@ end
 
 go 
 
-
 create or alter procedure [Tempus].[spUpdateWorkspace]
     @workspace_id int,
     @workspace_name nvarchar(50),
@@ -1070,7 +1104,7 @@ begin
         raiserror('The workspace doesn''t exist', 16, 1)
         return
     end
-    if not exists (select 1 from [Tempus].[User] where user_id = @user_id)
+    if not exists (select 1 from [Tempus].[User] where user_id = @workspace_admin)
     begin 
         raiserror('The user doesn''t exist', 16, 1)
         return
