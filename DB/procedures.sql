@@ -444,6 +444,37 @@ end
 go
 
 /*=-=-=-=-=-=-=-=-=-=-=- UPDATE PROCEDURES -=-=-=-=-=-=-=-=-=-=-=*/
+create or alter procedure [Tempus].[spUpdateCommentContent]
+    @comment_id int,
+    @content ntext
+as
+begin
+    if @comment_id is null or @content is null
+    begin
+        raiserror('Invalid parameters', 16, 1)
+        return
+    end
+
+    if not exists (select 1 from [Tempus].[Comment] where comment_id = @comment_id)
+    begin
+        raiserror('The comment doesn''t exist', 16, 1)
+        return
+    end
+
+    begin try
+        begin transaction
+        update [Tempus].[Comment] set content = @content where comment_id = @comment_id
+        commit
+    end try
+
+    begin catch
+        rollback
+        declare @error_message nvarchar(2048)
+        set @error_message = 'Erro: '+Error_Message();
+        throw 51200, @error_message, 1  
+    end catch
+end
+
 
 create or alter procedure [Tempus].[spUpdateTaskName]
     @task_id int,
@@ -1085,6 +1116,62 @@ begin
 end
 
 go 
+
+create or alter procedure [Tempus].[spUpdateComment]
+    @comment_id int,
+    @task_id int,
+    @content ntext,
+    @comment_datetime datetime,
+    @user_id int
+as
+begin
+    if  @comment_id is null or
+        @task_id is null or
+        @content is null or
+        @comment_datetime is null or
+        @user_id is null
+    begin
+        raiserror('Invalid parameters', 16, 1)
+        return
+    end
+
+    if not exists (select 1 from [Tempus].[Comment] where comment_id = @comment_id)
+    begin
+        raiserror('The comment doesn''t exist', 16, 1)
+    end
+
+    if not exists (select 1 from [Tempus].[Task] where task_id = @task_id)
+    begin 
+        raiserror('The task doesn''t exist', 16, 1)
+        return
+    end
+    
+    if not exists (select 1 from [Tempus].[User] where user_id = @user_id)
+    begin 
+        raiserror('The user doesn''t exist', 16, 1)
+        return
+    end
+
+    begin try 
+        begin transaction
+        update [Tempus].[Comment] 
+            set task_id = @task_id,
+                content = @content,
+                comment_datetime = @comment_datetime,
+                user_id = @user_id
+            where comment_id = @comment_id
+        commit
+    end try 
+
+    begin catch 
+        rollback 
+        declare @error_message nvarchar(2048)
+        set @error_message = 'Erro: '+Error_Message();
+        throw 51200, @error_message, 1  
+    end catch
+end
+
+go
 
 create or alter procedure [Tempus].[spUpdateWorkspace]
     @workspace_id int,
