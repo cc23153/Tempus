@@ -4,7 +4,7 @@ const cookieParser = require('cookie-parser')
 const cors = require('cors')
 const app = express()
 
-const PORT = process.env.API_PORT
+const API_PORT = process.env.API_PORT
 const FRONTEND_PORT = process.env.FRONTEND_PORT
 
 app.use(express.json())
@@ -21,6 +21,6 @@ app.use(cors(corsOptions))
 
 app.use('/', router)
 
-app.listen(PORT, () => {
-    console.log(`Server running under port ${PORT} | ${new Date()}`)
+app.listen(API_PORT, () => {
+    console.log(`Server running under port ${API_PORT} | ${new Date()}`)
 })
