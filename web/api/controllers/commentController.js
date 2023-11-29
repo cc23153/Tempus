@@ -1,3 +1,4 @@
+// os métodos do COMMENT estão funcionando
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
 const { getComment, postComment, putComment, deleteComment, patchCommentContent } = require('../database/yup/commentSchemas')
@@ -12,7 +13,7 @@ const commentExist = async(comment_id) => {
 }
 
 const taskExist = async(task_id) => {
-    const task = await prisma.comment.findUnique({
+    const task = await prisma.task.findUnique({
         where: {
             task_id : task_id
         }
@@ -29,7 +30,7 @@ const userExist = async(user_id) => {
     return user
 }
 
-
+// está funcionando
 exports.getComment = (('/'), async(req, res) => {
     const comment_id = req.body.comment_id
 
@@ -51,11 +52,11 @@ exports.getComment = (('/'), async(req, res) => {
         })
 })
 
-
+// está funcionando
 exports.postComment = (('/'), async(req, res) => {
     const task_id = req.body.task_id
     const content = req.body.content
-    const comment_datetime = req.body.comment_datetime
+    const comment_datetime = new Date(req.body.comment_datetime)
     const user_id = req.body.user_id
 
     await postComment.validate({task_id, content, comment_datetime, user_id})
@@ -88,12 +89,12 @@ exports.postComment = (('/'), async(req, res) => {
     })
 })
 
-
+// está funcionando
 exports.putComment = ('/', async(req, res) => {
     const comment_id = req.body.comment_id
     const task_id = req.body.task_id
     const content = req.body.content
-    const comment_datetime = req.body.comment_datetime
+    const comment_datetime = new Date(req.body.comment_datetime)
     const user_id = req.body.user_id
 
     await putComment.validate({comment_id, task_id, content, comment_datetime, user_id})
@@ -133,7 +134,7 @@ exports.putComment = ('/', async(req, res) => {
     })
 })
 
-
+// está funcionando
 exports.deleteComment = ('/', async(req, res) => {
     const comment_id = req.body.comment_id
 
@@ -158,7 +159,7 @@ exports.deleteComment = ('/', async(req, res) => {
     })
 })
 
-
+// está funcionando
 exports.patchCommentContent = ('/', async(req, res) => {
     const comment_id = req.body.comment_id
     const content = req.body.content
@@ -184,6 +185,5 @@ exports.patchCommentContent = ('/', async(req, res) => {
         })
     })
 })
-
 
 module.exports

@@ -43,7 +43,6 @@ exports.getTaskByWorkspace = (('/'), async (req, res) => {
         })
 })
 
-// Não está funcionando
 exports.postTask = (('/'), async (req, res) => {
     const task_name = req.body.task_name
     const task_description = req.body.task_description
