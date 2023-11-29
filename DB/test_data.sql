@@ -34,6 +34,55 @@ select * from [Tempus].[Task]
 select * from [Tempus].[Comment]
 select * from [Tempus].[TeamMembers]
 
+-- Delete all 
+
+delete from [Tempus].[User]
+delete from [Tempus].[Team]  
+delete from [Tempus].[Category]
+delete from [Tempus].[Workspace]
+delete from [Tempus].[Task]
+delete from [Tempus].[Comment]
+delete from [Tempus].[TeamMembers]
+
+-- Drop tables
+drop table [Tempus].[User]
+drop table [Tempus].[Team]  
+drop table [Tempus].[Category]
+drop table [Tempus].[Workspace]
+drop table [Tempus].[Task]
+drop table [Tempus].[Comment]
+drop table [Tempus].[TeamMembers]
+
+-- Drop triggers
+
+drop index [Tempus].[User].ixUser 
+drop index [Tempus].[Task].ixTask 
+drop index [Tempus].[Team].ixTeam 
+drop index [Tempus].[TeamMembers].ixTeamMembers 
+drop index [Tempus].[Comment].ixComment 
+drop index [Tempus].[Category].ixCategory 
+drop index [Tempus].[Workspace].ixWorkspace 
+
+-- Drop all procedures 
+
+DECLARE @name AS VARCHAR(max)
+
+DECLARE MyCursor CURSOR FAST_FORWARD READ_ONLY FOR
+SELECT name FROM sys.objects WHERE type='P' AND schema_id=SCHEMA_ID('Tempus')
+
+OPEN MyCursor
+
+FETCH NEXT FROM MyCursor INTO @name
+
+WHILE @@FETCH_STATUS = 0
+BEGIN
+    EXEC('DROP PROCEDURE Tempus.' + @name)
+    FETCH NEXT FROM MyCursor INTO @name
+END
+
+CLOSE MyCursor
+DEALLOCATE MyCursor 
+
 -- Reset identities
 DBCC CHECKIDENT('Tempus.[Task]', reseed, 0)
 DBCC CHECKIDENT('Tempus.[Team]', reseed, 0)
