@@ -11,8 +11,6 @@ const taskExist = async (task_id) => {
     return task
 }
 
-const workspaceExist
-
 exports.getTask = (('/'), async (req, res) => {
     const task_id = req.body.task_id
 
@@ -70,14 +68,13 @@ exports.postTask = (('/'), async (req, res) => {
                 res.status(400).json({ error: true, message: "Workspace doesn't exist" })
                 return
             }
-            console.log("passou por aqui")
-
-            const data = await prisma.$queryRaw`exec Tempus.spNewTask 
+            
+            await prisma.$queryRaw`exec Tempus.spNewTask 
                 ${task_name}, ${task_description}, 
                 ${task_situation}, ${task_image}, 
                 ${workspace_id}, ${task_begin}, 
                 ${task_end}, ${task_category}`
-            res.status(200).json({ error: false, message: "Task succesfully inserted", data })
+            res.status(200).json({ error: false, message: "Task succesfully inserted"})
 
         })
         .catch((err) => {
