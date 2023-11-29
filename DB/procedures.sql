@@ -155,12 +155,15 @@ begin
     end
 
     begin try 
+        begin transaction
         insert into [Tempus].[TeamMembers] values 
             (@team_id, @user_id)
         return
+        commit
     end try 
 
-    begin catch 
+    begin catch
+        rollback 
         declare @error_message nvarchar(2048)
         set @error_message = 'Erro: '+Error_Message();
         throw 51200, @error_message, 1 
@@ -475,6 +478,7 @@ begin
     end catch
 end
 
+go
 
 create or alter procedure [Tempus].[spUpdateTaskName]
     @task_id int,
