@@ -12,7 +12,7 @@ const validateToken = (req, res, next) => {
     try {
         const decoded = jwt.verify(token, SECRET)
 
-        if (req.username = decoded.payload.username) {
+        if (!req.body.username === decoded.payload.username) {
             res.status(401).send({ error: true, message: 'username does not match with token username' })
             return
         }
