@@ -1,12 +1,8 @@
-#fundo{
-    position: relative;
-    width: 100%;
-    height: 100vh;
+body{
     background-image: url('../imagens/imagemdefundo.PNG');
     background-repeat: no-repeat;
     background-size: cover;
     background-color: #88a65e;
-    filter:blur(10px);
 }
 
 #galeria {
