@@ -4,22 +4,22 @@ const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
 const { getTeam, postTeam, putTeam, deleteTeam } = require('../database/yup/teamSchemas')
 
-const teamExists = async(team_id) => {
+const teamExists = async (team_id) => {
     const team = await prisma.team.findUnique({
         where: {
-            team_id : team_id
+            team_id: team_id
         }
     })
     return team
 }
 
 // está funcionando
-exports.getTeam = (('/'), async(req, res) => {
+exports.getTeam = (('/'), async (req, res) => {
     const team_id = req.body.team_id
 
-    await getTeam.validate({team_id})
-        .then(async() => {
-            const team = await(teamExists(team_id))
+    await getTeam.validate({ team_id })
+        .then(async () => {
+            const team = await (teamExists(team_id))
             if (!team) {
                 res.status(400).json({
                     error: 'true', message: "Team doesn't exist"
@@ -36,11 +36,11 @@ exports.getTeam = (('/'), async(req, res) => {
 })
 
 // está funcionando
-exports.postTeam = (('/'), async(req, res) => {
+exports.postTeam = (('/'), async (req, res) => {
     const team_name = req.body.team_name
 
-    await postTeam.validate({team_name})
-        .then(async() => {
+    await postTeam.validate({ team_name })
+        .then(async () => {
             await prisma.$queryRaw`exec Tempus.spNewTeam ${team_name}`
             res.status(200).json({
                 error: 'false', message: "Team succesfully inserted"
@@ -54,13 +54,13 @@ exports.postTeam = (('/'), async(req, res) => {
 })
 
 // está funcionando
-exports.putTeam = (('/'), async(req, res) => {
+exports.putTeam = (('/'), async (req, res) => {
     const team_id = req.body.team_id
     const team_name = req.body.team_name
 
-    await putTeam.validate({team_id, team_name})
-        .then(async() => {
-            const team = await(teamExists(team_id))
+    await putTeam.validate({ team_id, team_name })
+        .then(async () => {
+            const team = await (teamExists(team_id))
             if (!team) {
                 res.status(400).json({
                     error: 'true', message: "Team doesn't exist"
@@ -82,12 +82,12 @@ exports.putTeam = (('/'), async(req, res) => {
 })
 
 // está funcionando
-exports.deleteTeam = (('/'), async(req, res) => {
+exports.deleteTeam = (('/'), async (req, res) => {
     const team_id = req.body.team_id
 
-    await deleteTeam.validate({team_id})
-        .then(async() => {
-            const team = await(teamExists(team_id))
+    await deleteTeam.validate({ team_id })
+        .then(async () => {
+            const team = await (teamExists(team_id))
             if (!team) {
                 res.status(400).json({
                     error: 'true', message: "Team doesn't exist"

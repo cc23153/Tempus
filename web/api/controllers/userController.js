@@ -24,7 +24,7 @@ const userExistsByUsername = async (username) => {
 exports.getUser = (('/'), async (req, res) => {
     const username = req.body.username
     await getUserSchema.validate({ username })
-        .then(async() => {
+        .then(async () => {
             const user = await userExistsByUsername(req.body.username)
             if (!user) {
                 res.status(400).json({
@@ -32,7 +32,7 @@ exports.getUser = (('/'), async (req, res) => {
                 })
                 return
             }
-            res.status(200).json({error: 'false', user})
+            res.status(200).json({ error: 'false', user })
         })
         .catch((err) => {
             res.status(400).json({
@@ -73,7 +73,7 @@ exports.getUserTeams = (('/'), async (req, res) => {
 exports.postUser = (('/'), async (req, res) => {
     const { username, nickname, email, pwd_hash, pwd_salt } = req.body
 
-    await postUserSchema.validate({username, nickname, email, pwd_hash, pwd_salt})
+    await postUserSchema.validate({ username, nickname, email, pwd_hash, pwd_salt })
         .then(async () => {
             const alreadyExist = await prisma.user.findFirst({
                 where: {
@@ -108,10 +108,10 @@ exports.deleteUser = (('/'), async (req, res) => {
                 res.status(400).json({ error: 'true', message: 'User doesn\'t exist' })
                 return
             }
-            
+
             await prisma.$queryRaw`exec Tempus.spDeleteUser ${user_id}`
             res.status(200).json({ error: 'false', message: 'User deleted' })
-            
+
         })
         .catch((err) => {
             res.status(400).json({
@@ -144,7 +144,7 @@ exports.patchUserUsername = (('/'), async (req, res) => {
 exports.patchUserNickname = (('/'), async (req, res) => {
     const { user_id, nickname } = req.body
 
-    await patchNicknameSchema.validate({user_id, nickname})
+    await patchNicknameSchema.validate({ user_id, nickname })
         .then(async () => {
             const response = await userExistsById(user_id)
             if (!response) {
@@ -166,7 +166,7 @@ exports.patchUserNickname = (('/'), async (req, res) => {
 exports.patchUserEmail = (('/'), async (req, res) => {
     const { user_id, email } = req.body
 
-    await patchEmailSchema.validate({user_id, email})
+    await patchEmailSchema.validate({ user_id, email })
         .then(async () => {
             const response = await userExistsById(user_id)
             if (!response) {
@@ -187,7 +187,7 @@ exports.patchUserEmail = (('/'), async (req, res) => {
 exports.patchUserPassword = (('/'), async (req, res) => {
     const { user_id, pwd_hash, pwd_salt } = req.body
 
-    await patchPasswordSchema.validate({user_id, pwd_hash, pwd_salt})
+    await patchPasswordSchema.validate({ user_id, pwd_hash, pwd_salt })
         .then(async () => {
             const response = await userExistsById(user_id)
             if (!response) {
@@ -209,14 +209,14 @@ exports.patchUserPassword = (('/'), async (req, res) => {
 exports.putUser = (('/'), async (req, res) => {
     const { user_id, username, nickname, email } = req.body
 
-    await postUserSchema.validate({user_id, username, nickname, email})
+    await postUserSchema.validate({ user_id, username, nickname, email })
         .then(async () => {
             const response = await userExistsById(user_id)
             if (!response) {
                 res.status(400).json({ error: 'true', message: 'User doesn\'t exist' })
                 return
             }
-            
+
             await prisma.$queryRaw`exec Tempus.spUpdateUser ${user_id}, ${username}, ${nickname}, ${email}`
             res.status(200).json({ error: 'false', message: 'User information succesfully updated' })
         })

@@ -68,7 +68,7 @@ exports.postTask = (('/'), async (req, res) => {
                 res.status(400).json({ error: true, message: "Workspace doesn't exist" })
                 return
             }
-            
+
             await prisma.$queryRaw`exec Tempus.spNewTask 
             ${task_name}, ${task_description}, 
             ${workspace_id}, ${task_situation}, 
@@ -237,8 +237,8 @@ exports.patchTaskCategory = (('/'), async (req, res) => {
             }
 
 
-            if (!(await prisma.category.findUnique({where: {category_id: task_category}})) ){
-                res.status(400).json({error: true, message: "Category doesn't exist"})
+            if (!(await prisma.category.findUnique({ where: { category_id: task_category } }))) {
+                res.status(400).json({ error: true, message: "Category doesn't exist" })
                 return
             }
 
@@ -254,7 +254,7 @@ exports.patchTaskCategory = (('/'), async (req, res) => {
 
 })
 
-exports.patchTaskEnd = (('/'), async (req, res)=> {
+exports.patchTaskEnd = (('/'), async (req, res) => {
     const task_id = req.body.task_id
     const task_end = new Date(req.body.task_end)
 
@@ -275,6 +275,6 @@ exports.patchTaskEnd = (('/'), async (req, res)=> {
                 error: 'true', message: `${err.message}`
             })
         })
-}) 
+})
 
 module.exports 
