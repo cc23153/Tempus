@@ -12,7 +12,7 @@ app.listen(PORT, () => {
 })
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '/public/signin.html'))
+    res.sendFile(path.join(__dirname, '/src/signUp.html'))
 })
 app.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname, '/src/login.html'))
