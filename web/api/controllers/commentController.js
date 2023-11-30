@@ -38,7 +38,7 @@ exports.getComment = (('/'), async (req, res) => {
         .then(async () => {
             const comment = await commentExist(comment_id)
             if (!comment) {
-                res.status(400).json({
+                res.status(404).json({
                     error: 'true', message: "Comment doesn't exist"
                 })
                 return
@@ -62,13 +62,13 @@ exports.postComment = (('/'), async (req, res) => {
     await postComment.validate({ task_id, content, comment_datetime, user_id })
         .then(async () => {
             if (!taskExist(task_id)) {
-                res.status(400).json({
+                res.status(404).json({
                     error: 'true', message: "Task doesn't exist"
                 })
                 return
             }
             if (!userExist(user_id)) {
-                res.status(400).json({
+                res.status(404).json({
                     error: 'true', message: "User doesn't exist"
                 })
                 return
@@ -100,13 +100,13 @@ exports.putComment = ('/', async (req, res) => {
     await putComment.validate({ comment_id, task_id, content, comment_datetime, user_id })
         .then(async () => {
             if (!commentExist(comment_id)) {
-                res.status(400).json({
+                res.status(404).json({
                     error: 'true', message: "Comment doesn't exist"
                 })
                 return
             }
             if (!taskExist(task_id)) {
-                res.status(400).json({
+                res.status(404).json({
                     error: 'true', message: "Task doesn't exist"
                 })
                 return
@@ -118,11 +118,11 @@ exports.putComment = ('/', async (req, res) => {
                 return
             }
             await prisma.$queryRaw`exec Tempus.spUpdateComment
-            ${comment_id},
-            ${task_id},
-            ${content},
-            ${comment_datetime},
-            ${user_id}`
+                ${comment_id},
+                ${task_id},
+                ${content},
+                ${comment_datetime},
+                ${user_id}`
             res.status(200).json({
                 error: 'false', message: "Comment succesfully updated"
             })
@@ -141,7 +141,7 @@ exports.deleteComment = ('/', async (req, res) => {
     await deleteComment.validate({ comment_id })
         .then(async () => {
             if (!commentExist(comment_id)) {
-                res.status(400).json({
+                res.status(404).json({
                     error: 'true', message: "Comment doesn't exist"
                 })
                 return
@@ -167,7 +167,7 @@ exports.patchCommentContent = ('/', async (req, res) => {
     await patchCommentContent.validate({ comment_id, content })
         .then(async () => {
             if (!commentExist(comment_id)) {
-                res.status(400).json({
+                res.status(404).json({
                     error: 'true', message: "Comment doesn't exist"
                 })
                 return

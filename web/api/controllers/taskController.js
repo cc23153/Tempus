@@ -18,7 +18,7 @@ exports.getTask = (('/'), async (req, res) => {
         .then(async () => {
             const task = await taskExist(task_id)
             if (!task) {
-                res.status(400).json({ error: true, message: "Task doesn't exist" })
+                res.status(404).json({ error: true, message: "Task doesn't exist" })
                 return
             }
             res.status(200).json(task)
@@ -36,7 +36,7 @@ exports.getTaskByWorkspace = (('/'), async (req, res) => {
                 }
             })
             if (!task) {
-                res.status(400).json({ error: true, message: "The workspace doesn't have any task" })
+                res.status(404).json({ error: true, message: "The workspace doesn't have any task" })
                 return
             }
             res.status(200).json(task)
@@ -65,7 +65,7 @@ exports.postTask = (('/'), async (req, res) => {
             }
 
             if (!workspaceExist) {
-                res.status(400).json({ error: true, message: "Workspace doesn't exist" })
+                res.status(404).json({ error: true, message: "Workspace doesn't exist" })
                 return
             }
 
@@ -107,7 +107,7 @@ exports.putTask = (('/'), async (req, res) => {
             }
 
             if (!workspaceExist) {
-                res.status(400).json({ error: true, message: "Workspace doesn't exist" })
+                res.status(404).json({ error: true, message: "Workspace doesn't exist" })
                 return
             }
 
@@ -135,7 +135,7 @@ exports.deleteTask = (('/'), async (req, res) => {
         .then(async () => {
             const task = await taskExist(task_id)
             if (!task) {
-                res.status(400).json({ error: true, message: "Task doesn't exist" })
+                res.status(404).json({ error: true, message: "Task doesn't exist" })
                 return
             }
 
@@ -159,7 +159,7 @@ exports.patchTaskName = (('/'), async (req, res) => {
         .then(async () => {
             const task = await taskExist(task_id)
             if (!task) {
-                res.status(400).json({ error: true, message: "Task doesn't exist" })
+                res.status(404).json({ error: true, message: "Task doesn't exist" })
                 return
             }
 
@@ -183,7 +183,7 @@ exports.patchTaskDescription = (('/'), async (req, res) => {
         .then(async () => {
             const task = await taskExist(task_id)
             if (!task) {
-                res.status(400).json({ error: true, message: "Task doesn't exist" })
+                res.status(404).json({ error: true, message: "Task doesn't exist" })
                 return
             }
 
@@ -208,7 +208,7 @@ exports.patchTaskSituation = (('/'), async (req, res) => {
         .then(async () => {
             const task = await taskExist(task_id)
             if (!task) {
-                res.status(400).json({ error: true, message: "Task doesn't exist" })
+                res.status(404).json({ error: true, message: "Task doesn't exist" })
                 return
             }
 
@@ -232,13 +232,13 @@ exports.patchTaskCategory = (('/'), async (req, res) => {
         .then(async () => {
             const task = await taskExist(task_id)
             if (!task) {
-                res.status(400).json({ error: true, message: "Task doesn't exist" })
+                res.status(404).json({ error: true, message: "Task doesn't exist" })
                 return
             }
 
 
             if (!(await prisma.category.findUnique({ where: { category_id: task_category } }))) {
-                res.status(400).json({ error: true, message: "Category doesn't exist" })
+                res.status(404).json({ error: true, message: "Category doesn't exist" })
                 return
             }
 
@@ -263,7 +263,7 @@ exports.patchTaskEnd = (('/'), async (req, res) => {
         .then(async () => {
             const task = await taskExist(task_id)
             if (!task) {
-                res.status(400).json({ error: true, message: "Task doesn't exist" })
+                res.status(404).json({ error: true, message: "Task doesn't exist" })
                 return
             }
 
