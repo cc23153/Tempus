@@ -2,7 +2,7 @@ const { PrismaClient } = require('@prisma/client')
 const { patchCategoryNameSchema, getCategorySchema, putCategorySchema, postCategorySchema, deleteCategorySchema, patchCategoryDescSchema } = require('../database/yup/categorySchemas')
 const prisma = new PrismaClient()
 
-
+// está funcionando
 exports.getCategory = (('/'), async (req, res) => {
     const category_id = req.body.category_id
 
@@ -14,7 +14,7 @@ exports.getCategory = (('/'), async (req, res) => {
                 }
             })
             if (!category) {
-                res.status(404).json({ error: true, message: 'not found' })
+                res.status(404).json({ error: true, message: 'Category not found' })
                 return
             }
             res.status(200).json({ error: false, category })
@@ -25,6 +25,7 @@ exports.getCategory = (('/'), async (req, res) => {
         })
 })
 
+// está funcionando
 exports.postCategory = (('/'), async (req, res) => {
     const category_name = req.body.category_name
     const category_description = req.body.category_description
@@ -32,13 +33,14 @@ exports.postCategory = (('/'), async (req, res) => {
     await postCategorySchema.validate({ category_name, category_description })
         .then(async () => {
             await prisma.$queryRaw`exec Tempus.spNewCategory ${category_name}, ${category_description}`
-            res.status(201).json({ error: false, message: 'succesfully created' })
+            res.status(201).json({ error: false, message: 'Category succesfully created' })
         })
         .catch((err) => {
             res.status(400).json({ error: true, message: err.message })
         })
 })
 
+// está funcionando
 exports.putCategory = (('/'), async (req, res) => {
     const category_id = req.body.category_id
     const category_name = req.body.category_name
@@ -52,7 +54,7 @@ exports.putCategory = (('/'), async (req, res) => {
                 }
             })
             if (!category) {
-                res.status(404).json({ error: true, message: 'not found' })
+                res.status(404).json({ error: true, message: 'Category not found' })
                 return
             }
 
@@ -64,6 +66,7 @@ exports.putCategory = (('/'), async (req, res) => {
         })
 })
 
+// está funcionando
 exports.deleteCategory = (('/'), async (req, res) => {
     const category_id = req.body.category_id
 
@@ -75,7 +78,7 @@ exports.deleteCategory = (('/'), async (req, res) => {
                 }
             })
             if (!category) {
-                res.status(404).json({ error: true, message: 'not found' })
+                res.status(404).json({ error: true, message: 'Category not found' })
                 return
             }
 
@@ -87,6 +90,7 @@ exports.deleteCategory = (('/'), async (req, res) => {
         })
 })
 
+// está funcionando
 exports.patchCategoryName = (('/'), async (req, res) => {
     const category_id = req.body.category_id
     const category_name = req.body.category_name
@@ -99,18 +103,19 @@ exports.patchCategoryName = (('/'), async (req, res) => {
                 }
             })
             if (!category) {
-                res.status(404).json({ error: true, message: 'not found' })
+                res.status(404).json({ error: true, message: 'Category not found' })
                 return
             }
 
             await prisma.$queryRaw`exec Tempus.spUpdateCategoryName ${category_id}, ${category_name}`
-            res.status(200).json({ error: false, message: 'succesfully updated' })
+            res.status(200).json({ error: false, message: 'Category succesfully updated' })
         })
         .catch((err) => {
             res.status(400).json({ error: true, message: err.message })
         })
 })
 
+// está funcionando
 exports.patchCategoryDescription = (('/'), async (req, res) => {
     const category_id = req.body.category_id
     const category_description = req.body.category_description
@@ -123,12 +128,12 @@ exports.patchCategoryDescription = (('/'), async (req, res) => {
                 }
             })
             if (!category) {
-                res.status(404).json({ error: true, message: 'not found' })
+                res.status(404).json({ error: true, message: 'Category not found' })
                 return
             }
 
             await prisma.$queryRaw`exec Tempus.spUpdateCategoryContent ${category_id}, ${category_description}`
-            res.status(200).json({ error: false, message: 'succesfully updated' })
+            res.status(200).json({ error: false, message: 'Category succesfully updated' })
         })
         .catch((err) => {
             res.status(400).json({ error: true, message: err.message })
