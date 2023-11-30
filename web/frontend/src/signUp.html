@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign up</title>
+    <link rel="stylesheet" href="../Stiles/signUp.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div id="cabecalho">
+            <a href="./inicio.html" id="aLogo">
+                <img id="logo" src="../imagens/logo.png">
+            </a>
+            <div id="botoes">
+                <a href="./home.html">
+                    <button type="button" class="buttons">
+                        Home
+                    </button>
+                </a>
+                <a href="./signIn.html">
+                    <button type="button" class="buttons">
+                        Sign in
+                    </button>
+                </a>
+                <a href="./signUp.html">
+                    <button type="button" class="buttons">
+                        Sign up
+                    </button>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div id="divPrincipal">
+        <div id="conteudo">
+            <form @submit.prevent="submitForm">
+                <h1 id="tituloDivPrincipal">Sign Up</h1>
+                <br>
+                <br>
+                <br>
+                <div id="alinhar">
+                    <label class="labels" for="username">Nome: </label>
+                    <input type="text" class="inputs" id="username" v-model="userData.username" required>
+                    <br>
+                    <br>
+                    <label class="labels" for="nickname">Apelido: </label>
+                    <input type="text" class="inputs" id="nickname" v-model="userData.nickname" required>
+                    <br>
+                    <br>
+                    <label class="labels" for="email">E-mail: </label>
+                    <input type="email" class="inputs" id="email" v-model="userData.email" required>
+                    <br>
+                    <br>
+                    <label class="labels" for="pwd">Senha: </label>
+                    <input type="password" class="inputs" id="pwd" v-model="userData.pwd" required>
+                </div>
+                <br>
+                <br>
+                <br>
+                <br>
+                <button type="submit" class="buttons">
+                    Enviar
+                </button>
+                <br>
+                <br>
+                <br>
+                <div id="resposta"></div>
+            </form>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script>
+        new Vue({
+        el: '#conteudo',
+        data: {
+            userData: {
+            username: '',
+            nickname: '',
+            email: '',
+            pwd: ''
+            }
+        },
+        methods: {
+            submitForm() {
+                if (!this.userData.username || !this.userData.nickname || !this.userData.email || !this.userData.pwd) {
+                    this.resposta = 'Por favor, preencha todos os campos';
+                    return;
+                }
+        
+                const apiUrl = 'http://localhost:5050/a/signup';
+                const result = document.getElementById('resposta')
+        
+                fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                    'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(this.userData),
+                    credentials: "include"
+                })
+                .then(response => {
+                    if (!response.ok) {
+                    result.innerText = 'Algo deu errado'
+                    throw new Error('Erro ao cadastrar usuário');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    result.innerText = 'Usuário cadastrado com sucesso'
+                    alert('Usuário cadastrado com sucesso:', data);
+                    // Limpar o formulário ou redirecionar para outra página, se necessário
+                    this.userData = {
+                    username: '',
+                    nickname: '',
+                    email: '',
+                    pwd: ''
+                    };
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                });
+                }
+            }
+        });
+    </script>
+</body>
+</html>
