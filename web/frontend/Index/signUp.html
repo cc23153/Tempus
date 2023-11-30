@@ -41,7 +41,7 @@
             <br>
             <div id="alinhar">
                 <label class="labels">Nome: </label>
-                <input type="text" class="inputs" id="nome">
+                <input type="text" class="inputs" id="username">
                 <br>
                 <br>
                 <label class="labels">Apelido: </label>
@@ -53,11 +53,11 @@
                 <br>
                 <br>
                 <label class="labels">Senha: </label>
-                <input type="password" class="inputs" id="senha">
+                <input type="password" class="inputs" id="pwd">
                 <br>
                 <br>
                 <label class="labels">Confirmar: </label>
-                <input type="password" class="inputs" id="senhaConfirmada">
+                <input type="password" class="inputs" id="pwdConfirmada">
             </div>
             <br>
             <br>
@@ -73,5 +73,56 @@
         </div>
     </div>
     <script src="../scripts/signUp.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script>
+        new Vue({
+        el: '#app',
+        data: {
+            userData: {
+            username: '',
+            nickname: '',
+            email: '',
+            pwd: ''
+            }
+        },
+        methods: {
+            submitForm() {
+            
+            const apiUrl = 'http://localhost:5050/a/signup';
+            const result = document.getElementById('resposta')
+    
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(this.userData),
+                credentials: "include"
+            })
+            .then(response => {
+                if (!response.ok) {
+                result.innerText = 'Algo deu errado'
+                throw new Error('Erro ao cadastrar usuário');
+                }
+                return response.json();
+            })
+            .then(data => {
+                result.innerText = 'Usuário cadastrado com sucesso'
+                alert('Usuário cadastrado com sucesso:', data);
+                // Limpar o formulário ou redirecionar para outra página, se necessário
+                this.userData = {
+                username: '',
+                nickname: '',
+                email: '',
+                pwd: ''
+                };
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+            });
+            }
+        }
+        });
+    </script>
 </body>
 </html>
