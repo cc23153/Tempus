@@ -1,0 +1,132 @@
+body {
+    background-image: url('../imagens/fundo.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color: #88a65e;
+}
+
+header {
+    background-color: #88a65e;
+    height: 110px;
+    border-radius: 10px;
+    border-bottom: #8c2318 solid 5px;
+    box-shadow: 7.5px 7.5px 15.5px 0px #8c2318;
+    margin-bottom: 50px;
+}
+
+#cabecalho {
+    width: auto;
+    padding: 5px;
+    display: flex;
+    justify-content: right;
+}
+
+#logo {
+    width: auto;
+    height: 80px;
+    margin: auto;
+    margin-left: 40px;
+    margin-top: 8px;
+    background-color:#f2c45a;
+    border-radius: 20px;
+    border: #8c2318 solid 2px;
+    box-shadow: 7.5px 7.5px 15.5px 0px #8c2318;
+    justify-self: left;
+}
+
+#logo:hover {
+    background-color: #bfb35a;
+    box-shadow: 7.5px 7.5px 15.5px 0px #f2c45a;
+    border: #f2c45a solid 2px;
+    cursor: pointer;
+}
+
+#aLogo {
+    margin: auto;
+    margin-left: 1px;
+    justify-self: left;
+
+}
+
+#botoes {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    width: fit-content;
+}
+
+a {
+    text-decoration: none;
+    color: #8c2318;
+}
+
+a:hover {
+    color: #8c2318;
+}
+
+.buttons {
+    width: 150px;
+    height: 50px;
+    background-color: #f2c45a;
+    border-radius: 8px;
+    border: #8c2318 solid 2px;
+    color: #8c2318;
+    font-size: 18px;
+    align-items: center;
+    margin-right: 20px; 
+    box-shadow: 7.5px 7.5px 15.5px 0px #8c2318;
+    justify-content: right;
+}
+
+.buttons:hover {
+    background-color: #bfb35a;
+    box-shadow: 7.5px 7.5px 15.5px 0px #f2c45a;
+    border: #f2c45a solid 2px;
+    /* color: #f2c45a; */
+    transform: translateY(-10px);
+    cursor: pointer;
+}
+
+#divPrincipal {
+    background-color: #88a65e77;
+    width: fit-content;
+    height: fit-content;
+    border: #8c2318 solid 5px;
+    border-radius: 20%;
+    display: flex;
+    justify-self: center;
+    margin: auto;
+    text-align: center;
+    box-shadow: 7.5px 7.5px 15.5px 0px #8c2318;
+    padding: 100px;
+}
+
+#conteudo {
+    margin: auto;
+    text-align: center;
+}
+
+#tituloDivPrincipal {
+    color: #8c2318;
+    font-size: 60px;
+}
+
+.labels {
+    font-size: 30px;
+}
+
+.inputs {
+    width: 250px;
+    height: 40px;
+    border-radius: 15px;
+    font-size: 20px;
+}
+
+#alinhar {
+    text-align: end;
+}
+
+#resposta {
+    font-size: 20px;
+    color: #8c2318;
+}
