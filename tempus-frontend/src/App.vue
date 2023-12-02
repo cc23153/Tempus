@@ -1,113 +1,83 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
 import Task from './components/Task.vue';
-import IconTempus from './components/icons/IconTempus.vue'
+import IconTempus from './components/icons/Logo.vue'
+import HomeView from './views/HomeView.vue'
 </script>
 
 <template>
   <header>
-    <IconTempus></IconTempus>
-
     <div class="wrapper">
-
       <nav>
-        <RouterLink to="/login">Login</RouterLink>
-        <RouterLink to="/signin">Sign in</RouterLink>
+        <RouterLink to="/" class="icon"> 
+          <IconTempus></IconTempus> 
+        </RouterLink> 
+        <div class="right-links-container">
+          <RouterLink to="/login" class="right-links">Login</RouterLink>
+          <RouterLink to="/signup" class="right-links">Signup</RouterLink>
+        </div>
       </nav>
     </div>
   </header>
-
   <RouterView />
-  <!-- <header>
-        <div id="cabecalho" class="container">
-            <Icon-Tempus></Icon-Tempus>
-            <div id="botoes">
-                <a href="./home.html">
-                    <button type="button" class="buttons">
-                        Home
-                    </button>
-                </a>
-                <a href="./signIn.html">
-                    <button type="button" class="buttons">
-                        Sign in
-                    </button>
-                </a>
-                <a href="./signUp.html">
-                    <button type="button" class="buttons">
-                        Sign up
-                    </button>
-                </a>
-            </div>
-        </div>
-        <br>
-    </header> -->
-    <Task></Task>
 </template>
 
-<!-- <style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
+<style scoped>
+ header {
+    background-color: #88a65e;
+    height: 90px;
+    border-bottom: #8c2318 solid;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    box-shadow: 7.5px 7.5px 15.5px 0px #8c2318;
     display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    width: 100vw;
+    position: sticky;
+    top: 0; /* Fixa a barra de navegação no topo da página */
+    z-index: 100; /* Certifica-se de que a barra de navegação esteja acima de outros elementos */
   }
 
   nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
+    width: 100%;
+    height: inherit;
+    display: flex;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    background-color: #88a65e; /* Adicione a cor de fundo para a nav ficar sempre visível */
+    z-index: 100; /* Certifica-se de que a barra de navegação esteja acima de outros elementos */
   }
-}
-</style> -->
 
-<style scoped>
+  .wrapper {
+    height: 100%;
+    width: 100%;
+  }
+
+  .right-links-container {
+    padding-right: 5vw;
+    margin-left: auto;
+    display: flex;
+  }
+
+  .right-links {
+    font-size: 20px;
+    margin-left: 20px;
+  }
+
+  .icon {
+    height: 100%;
+    margin-right: 20px;
+  }
+
+  a {
+    text-decoration: none;
+    color: #8c2318;
+  }
+
+  a:hover {
+    color: #8c2318;
+  }
 
 </style>
