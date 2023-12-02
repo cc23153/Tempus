@@ -24,9 +24,9 @@
             <input type="text" id="txtBusca2" placeholder="Conteudo.."/>
         </div>
         <br>
-        <h3>Digite a categoria</h3>
+        <h3>Selecione a categoria</h3>
         <div id="Busca">
-            <input type="text" id="txtBusca2" placeholder="categoria.."/>
+            <select name="categorias" id="categorias"></select>
         </div>
         <br>
         <br>
@@ -34,6 +34,31 @@
             Criar
         </button>
     </div>
+
+    <script>
+        // Função para buscar dados da tabela via API Fetch
+        async function fetchCategorias() {
+            const response = await fetch('http://localhost:5050/ca/get'); 
+            const data = await response.json();
+            return data;
+        }
+    
+        // Função para preencher o elemento <select> com os itens
+        async function fillSelect() {
+            const selectElement = document.getElementById('categorias');
+            const categorias = await fetchCategorias();
+    
+            // Adiciona options ao select
+            categorias.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category.category_id;
+                option.textContent = category.category_name;
+                selectElement.appendChild(option);
+            });
+        }
+    
+        fillSelect();
+    </script>
 
 </body>
 
