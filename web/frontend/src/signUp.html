@@ -84,6 +84,7 @@
         },
         methods: {
             submitForm() {
+                window.location.href = '../Index/PaginaTrelloInicio.html'
                 if (!this.userData.username || !this.userData.nickname || !this.userData.email || !this.userData.pwd) {
                     this.resposta = 'Por favor, preencha todos os campos';
                     return;

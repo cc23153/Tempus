@@ -1,5 +1,5 @@
-require('dotenv').config();
-const secretKey = process.env.SECRET_KEY;
+// require('dotenv').config();
+// const secretKey = process.env.SECRET_KEY;
 
 const express = require('express')
 const path = require('path')
