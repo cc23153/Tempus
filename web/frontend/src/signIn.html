@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign in</title>
-    <link rel="stylesheet" href="../stiles/signIn.css">
+    <link rel="stylesheet" href="../Stiles/signIn.css">
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -14,12 +14,12 @@
                 <img id="logo" src="../imagens/logo.png">
             </a>
             <div id="botoes">
-                <a href="./home.html">
+                <a href="../Index/home.html">
                     <button type="button" class="buttons">
                         Home
                     </button>
                 </a>
-                <a href="./signIn.html">
+                <a href="/signIn">
                     <button type="button" class="buttons">
                         Sign in
                     </button>
@@ -41,20 +41,45 @@
             <br>
             <div id="alinhar">
                 <label class="labels">Username: </label>
-                <input type="text" class="inputs">
+                <input type="text" class="inputs" id="username">
                 <br>
                 <br>
                 <label class="labels">Senha: </label>
-                <input type="password" class="inputs">
+                <input type="password" class="inputs" id="password">
             </div>
             <br>
             <br>
             <br>
             <br>
-            <button type="button" class="buttons" onclick="Acessar()">
+            <button type="button" class="buttons" onclick="signIn()">
                 Enviar
             </button>
         </div>
     </div>
+
+    <script>
+        async function signIn() {
+            window.alert("Pelo menos na função entrou")
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+      
+            const response = await fetch('http://localhost:5050/a/signIn', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                username: username,
+                pwd: password,
+              }),
+              credentials: 'include'
+            });
+            const result = await response.json();
+           
+              alert(result.message)
+              window.alert(result.message)
+
+          }
+    </script>
 </body>
 </html>

@@ -1,3 +1,6 @@
+require('dotenv').config();
+const secretKey = process.env.SECRET_KEY;
+
 const express = require('express')
 const path = require('path')
 const app = express()
@@ -17,6 +20,6 @@ app.get('/', (req, res) => {
 app.get('/signUp', (req, res) => {
     res.sendFile(path.join(__dirname, '/src/signUp.html'))
 })
-app.get('/login', (req, res) => {
-    res.sendFile(path.join(__dirname, '/src/login.html'))
+app.get('/signIn', (req, res) => {
+    res.sendFile(path.join(__dirname, '/src/signIn.html'))
 })
