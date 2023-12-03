@@ -28,7 +28,7 @@ exports.signup = (('/'), async (req, res) => {
             await prisma.$queryRaw`exec Tempus.spNewUser ${username}, ${nickname}, ${email}, ${pwd_hash}, ${pwd_salt}`
 
             const token = generateJWT({ username, email })
-            res.cookie('token', token, { httpOnly: true, maxAge: 604_800_000, secure: true })
+            res.cookie('token', token, { httpOnly: false, maxAge: 604_800_000, secure: true })
             res.status(201).json({ error: 'false', message: 'User created successfully' });
         })
         .catch((err) => {
@@ -70,7 +70,7 @@ exports.login = (('/login'), async (req, res) => {
             }
 
             const token = generateJWT({ username })
-            res.cookie('token', token, { httpOnly: true, maxAge: 604_800_000, secure: true, })
+            res.cookie('token', token, { httpOnly: false, maxAge: 604_800_000, secure: true, })
             res.status(200).json({ error: 'false', message: 'Successful login' })
 
         })
