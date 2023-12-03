@@ -1,17 +1,25 @@
 <template>
-  <div class="login-container">
+   <div class="login-container">
     <form id="login-form">
-      <label for="username">Username:</label>
+      
+      <IconTempus/>
+      <label for="username">Username</label>
       <input type="text" id="username" name="username" required>
-      <label for="password">Password:</label>
+      <label for="password">Password</label>
       <input type="password" id="password" name="password" required>
       <button type="button" @click="login">Login</button>
-      <p v-if="hasError">{{ errors }}</p>
+      
+      <div class="links">
+        <RouterLink to="/resetpassword">Forgot my password</RouterLink>
+        <RouterLink to="/signup">Create an account</RouterLink>
+      </div>
+      <p v-if="hasError">{{ errors.toString() }}</p>
     </form>
   </div>
 </template>
 
 <script setup>
+import IconTempus from '../components/icons/IconTempus.vue'
 let hasError = false;
 let errors = [];
 const validateInfo = () => {
@@ -63,7 +71,7 @@ const login = async () => {
     alert(result.message);
     console.log(response)
     
-    document.location = '/signin';
+    document.location = `/u/${username.value}`;
   }
 };
 </script>
@@ -77,7 +85,7 @@ const login = async () => {
 }
 
 #login-form {
-  width: 300px; /* Ajuste conforme necessário */
+  width: 25vw; /* Ajuste conforme necessário */
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -87,6 +95,7 @@ const login = async () => {
 label {
   display: block;
   margin-bottom: 5px;
+  text-align: left;
 }
 
 input {
@@ -111,4 +120,24 @@ button {
 button:hover {
   background-color: #0056b3;
 }
+
+.links {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.links RouterLink{
+  margin-right: 10px;
+  color: #007BFF;
+ 
+}
+a{
+  text-decoration: none;
+}
+a:visited{
+  color: #000000;
+}
+
 </style>

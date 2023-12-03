@@ -18,4 +18,5 @@
                     data-gra="path-name" />
             </g>
         </g>
-</svg></template>
+    </svg>
+</template>
