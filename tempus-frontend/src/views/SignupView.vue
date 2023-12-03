@@ -1,19 +1,19 @@
 <template>
   <div id="app" class="signup-container">
     <form @submit.prevent="submitForm">
-      <label for="username">Username:</label>
+      <label for="username">Username</label>
       <input v-model="userData.username" type="text" id="username" name="username" required>
 
-      <label for="nickname">Nickname:</label>
+      <label for="nickname">Nickname</label>
       <input v-model="userData.nickname" type="text" id="nickname" name="nickname" required>
 
-      <label for="email">Email:</label>
+      <label for="email">Email</label>
       <input v-model="userData.email" type="email" id="email" name="email" required>
 
-      <label for="password">Password:</label>
+      <label for="password">Password</label>
       <input v-model="userData.pwd" type="password" id="password" name="password" required>
 
-      <label for="passwordConfirmation">Confirm the password:</label>
+      <label for="passwordConfirmation">Confirm the password</label>
       <input v-model="userData.pwdConfirmation" type="password" id="passwordConfirmation" name="passwordConfirmation" required>
 
       <button type="submit">Sign Up</button>
@@ -117,6 +117,7 @@ form {
 label {
   display: block;
   margin-bottom: 5px;
+  text-align: left;
 }
 
 input {
