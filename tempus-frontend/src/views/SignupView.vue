@@ -1,6 +1,7 @@
 <template>
   <div id="app" class="signup-container">
     <form @submit.prevent="submitForm">
+      <IconTempus/>
       <label for="username">Username</label>
       <input v-model="userData.username" type="text" id="username" name="username" required>
 
@@ -26,6 +27,7 @@
 
 <script setup>
 import { ref } from 'vue';
+import IconTempus from '../components/icons/IconTempus.vue';
 
 const userData = ref({
   username: '',

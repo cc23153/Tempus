@@ -6,9 +6,9 @@
   
   <script setup>
   import { shallowRef } from 'vue';
-  import EmailStep from '../components/PasswordResetComponents/EmailStep.vue';
-  import VerificationStep from '../components/PasswordResetComponents/VerificationStep.vue';
-  import PasswordResetStep from '../components/PasswordResetComponents/PasswordResetStep.vue';
+  import EmailStep from '../components/PasswordReset/EmailStep.vue';
+  import VerificationStep from '../components/PasswordReset/VerificationStep.vue';
+  import PasswordResetStep from '../components/PasswordReset/PasswordResetStep.vue';
   
   const currentStep = shallowRef(PasswordResetStep);
   
