@@ -5,7 +5,7 @@ import java.sql.SQLException;
 public class Conexao {
     
     public static void main(String[] args) {
-        String url = "jdbc:sqlserver://regulus:5050;database=BD23153;user=BD23153;password=BD23153;encrypt=true;schema=Tempus";
+        String url = "jdbc:sqlserver://regulus.cotuca.unicamp.br:1433;database=BD23153;user=BD23153;password=BD23153;encrypt=true;trustServerCertificate=true;schema=Tempus";
         String usuario = "BD23153";
         String senha = "BD23153";
 
