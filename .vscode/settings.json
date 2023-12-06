@@ -1,0 +1,10 @@
+{
+    "java.project.referencedLibraries": {
+        "include": [
+            "Z:\\2023\\Técnico\\2oSemestre\\Tempus\\tempus-frontend\\java\\jars\\mssql-jdbc-12.4.1.jre11.jar"
+        ]
+    },
+    "java.project.sourcePaths": [
+        "Z:\\2023\\Técnico\\2oSemestre\\Tempus\\tempus-frontend\\java\\src"
+    ]
+}
