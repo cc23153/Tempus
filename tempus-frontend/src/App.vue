@@ -7,7 +7,6 @@ import { RouterLink, RouterView } from 'vue-router'
 </template>
 
 <script>
-import Header from './components/Header.vue';
 
 </script>
 
