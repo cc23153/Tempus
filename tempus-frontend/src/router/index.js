@@ -6,6 +6,7 @@ import ResetPassword from '../views/ResetPasswordView.vue'
 import Signup from '../views/SignupView.vue'
 import UserHome from '../views/UserHomeView.vue'
 import AccountSettingsView from '../views/AccountSettingsView.vue'
+import CardsView from '../views/CardsView.vue'
 
 const token = document.cookie
   .split("; ")
@@ -51,7 +52,38 @@ const router = createRouter({
     {
       path: '/u/:username',
       name: 'user-profile',
-      component: UserHome,
+      component: UserHome
+      // beforeEnter: async (to, from, next) => {
+      //   const username = to.params.username;
+      //   const user_exist = async (username) => { 
+      //     const response = await fetch('http://localhost:5050/u/', {
+      //       method: 'POST',
+      //       headers: {
+      //         'Content-Type': 'application/json',
+      //       },
+      //       body: JSON.stringify({ username }),
+      //       credentials: 'include',
+      //     });
+  
+      //     const data = await response.json();
+      //     return data;
+      //   };
+  
+      //   try {
+      //     const exists = await user_exist(username);
+  
+      //     if (exists.ok) {
+      //       next();
+      //     } else {
+      //       next({ name: 'not-found' });
+      //       document.cookie = "user=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"
+      //       document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"
+      //     }
+      //   } catch (error) {
+      //     console.error('Erro ao verificar se o usuário existe:', error);
+      //     next({ name: 'not-found' });
+      //   }
+      // },
     },
     {
       path: '/u/:username/settings',
@@ -60,13 +92,18 @@ const router = createRouter({
       meta: {
         requiresAuth: true,
       },
-      props: true, // Pass route.params to the component as props
+      props: true, 
     },
     {
       path: '/:pathMatch(.*)*',
       name: 'not-found',
       component: NotFound
-    }
+    },
+    {
+      path: '/cards',
+      name: 'cards',
+      component: CardsView,
+    },
   ]
 })
 
