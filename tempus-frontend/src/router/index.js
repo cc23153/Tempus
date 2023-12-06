@@ -5,6 +5,7 @@ import NotFound from '../views/NotFound.vue'
 import ResetPassword from '../views/ResetPasswordView.vue'
 import Signup from '../views/SignupView.vue'
 import UserHome from '../views/UserHomeView.vue'
+import AccountSettingsView from '../views/AccountSettingsView.vue'
 
 const token = document.cookie
         .split("; ")
@@ -49,8 +50,15 @@ const router = createRouter({
       path: '/u/:username',
       name: 'user-profile',
       component: UserHome,  
-
-      
+    },
+    {
+      path: '/u/:username/settings',
+      name: 'user-settings',
+      component: AccountSettingsView,
+      meta: {
+        requiresAuth: true,
+      },
+      props: true, // Pass route.params to the component as props
     },
     {
       path: '/:pathMatch(.*)*',

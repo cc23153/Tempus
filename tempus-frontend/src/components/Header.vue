@@ -28,7 +28,6 @@ import IconTempus from './icons/IconTempus.vue'
     border-bottom: #8c2318 solid;
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
-    box-shadow: 7.5px 7.5px 15.5px 0px #8c2318;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -54,7 +53,7 @@ import IconTempus from './icons/IconTempus.vue'
     width: 100%;
   }
   .icon {
-    height: 100%;
+    height: auto;
     width: 100%;
     margin-right: 20px;
   }
