@@ -42,6 +42,13 @@ const userData = ref({
     password: ''
 });
 
+let originalData = {
+    username : userData.value.username,
+    nickname : userData.value.nickname,
+    email:userData.value.email,
+    password : ''
+}
+
 async function fetchData() {
     const response = await fetch('http://localhost:5050/u/', {
         method: 'POST',
@@ -57,12 +64,7 @@ async function fetchData() {
     userData.value.nickname = data.user.nickname
     userData.value.email = data.user.email
     userData.value.password = ''
-    let originalData = {
-    username : userData.value.username,
-    nickname : userData.value.nickname,
-    email:userData.value.email,
-    password : ''
-}
+    
     originalData.username = userData.username,
     originalData.nickname = userData.nickname,
     originalData.email = userData.email,
