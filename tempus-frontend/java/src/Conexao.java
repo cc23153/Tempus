@@ -11,6 +11,22 @@ public class Conexao {
 
         try (Connection conexao = DriverManager.getConnection(url, usuario, senha)) {
             System.out.println("Entrou no banco de dados.");
+
+            String queryUsername = "SELECT username FROM Tempus.[User] WHERE user_id = '"user_id"'";
+            String queryNickname = "SELECT nickname FROM Tempus.[User] WHERE user_id = '"user_id"'";
+            String queryEmail = "SELECT email FROM Tempus.[User] WHERE user_id = '"user_id"'" ;
+            int queryNumTasks = Number("COUNT(task_id) FROM Tempus.Task WHERE user_id = '"user_id"'");
+
+            if (queryNumTasks <= 0) {
+                throw new IllegalArgumentException("O usuário não possui nenhuma task.");
+            }
+            else if (queryNumTasks < 50) {
+                User user = new User(queryUsername, queryNickname, queryEmail, queryNumTasks);
+            }
+            else {
+                UserWithStatus userWithStatus = new UserWithStatus(queryUsername, queryNickname, queryEmail, queryNumTasks);
+            }
+
         }
         catch (SQLException excessao) {
             excessao.printStackTrace();
