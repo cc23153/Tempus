@@ -43,7 +43,7 @@ const signupResult = ref('');
 const validateInfo = () => {
   const { username, nickname, email, pwd, pwdConfirmation } = userData.value;
 
-  errors.value = []; // Limpar erros a cada validação
+  errors.value = [];
   hasError.value = false;
 
   if (typeof username !== 'string') {
@@ -55,8 +55,6 @@ const validateInfo = () => {
     errors.value.push('The passwords doesn\'t match')
     hasError.value = true;
   }
-
-  // Outras validações conforme necessário
 
   return { username, nickname, email, pwd };
 };
@@ -81,11 +79,8 @@ const submitForm = async () => {
         throw new Error('Erro ao cadastrar usuário');
       }
 
-      const data = await response.json();
       signupResult.value = 'Usuário cadastrado com sucesso';
 
-      
-      // Limpar o formulário ou redirecionar para outra página, se necessário
       userData.value = {
         username: '',
         nickname: '',
