@@ -83,7 +83,7 @@ const submitForm = async () => {
 
       const data = await response.json();
       signupResult.value = 'Usuário cadastrado com sucesso';
-      alert('Usuário cadastrado com sucesso:', data);
+
       
       // Limpar o formulário ou redirecionar para outra página, se necessário
       userData.value = {
@@ -97,6 +97,13 @@ const submitForm = async () => {
       signupResult.value = error.message;
     }
   }
+  
+const username = document.cookie
+  .split("; ")
+  .find((row) => row.startsWith("user="))
+  ?.split("=")[1];
+
+  document.location = `/u/${username}`
 };
 </script>
 
