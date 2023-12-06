@@ -88,6 +88,6 @@ exports.login = (('/login'), async (req, res) => {
 
 exports.logout = (('/'), async (req, res) => {
     res.cookie('token', '', { maxAge: 0 })
-    res.cookie('uid', '', {maxAge: 0})
+    res.cookie('user', '', {maxAge: 0})
     res.status(200).json({ error: false, message: 'success logout' })
 })
