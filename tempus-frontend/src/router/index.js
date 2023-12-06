@@ -8,9 +8,13 @@ import UserHome from '../views/UserHomeView.vue'
 import AccountSettingsView from '../views/AccountSettingsView.vue'
 
 const token = document.cookie
-        .split("; ")
-        .find((row) => row.startsWith("token="))
-        ?.split("=")[1];
+  .split("; ")
+  .find((row) => row.startsWith("token="))
+  ?.split("=")[1];
+const username = document.cookie
+  .split("; ")
+  .find((row) => row.startsWith("user="))
+  ?.split("=")[1];
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -22,6 +26,7 @@ const router = createRouter({
         return new Promise((resolve) => {
           if (token) {
             resolve(UserHome);
+            document.location = `/u/${username}`
           } else {
             resolve(HomeView);
           }
@@ -36,9 +41,6 @@ const router = createRouter({
     {
       path: '/signup',
       name: 'signup',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
       component: () => Signup
     },
     {
@@ -49,7 +51,7 @@ const router = createRouter({
     {
       path: '/u/:username',
       name: 'user-profile',
-      component: UserHome,  
+      component: UserHome,
     },
     {
       path: '/u/:username/settings',
