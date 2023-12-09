@@ -71,8 +71,9 @@ exports.postTask = (('/'), async (req, res) => {
 
             await prisma.$queryRaw`exec Tempus.spNewTask 
             ${task_name}, ${task_description}, 
-            ${workspace_id}, ${task_situation}, 
-            ${task_begin}, ${task_end}, ${task_category}`
+            ${task_situation}, ${task_image}, 
+            ${workspace_id},  ${task_begin},
+            ${task_end}, ${task_category}`
             res.status(200).json({ error: false, message: "Task succesfully inserted" })
 
         })

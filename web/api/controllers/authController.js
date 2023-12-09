@@ -28,7 +28,9 @@ exports.signup = (('/'), async (req, res) => {
             await prisma.$queryRaw`exec Tempus.spNewUser ${username}, ${nickname}, ${email}, ${pwd_hash}, ${pwd_salt}`
 
             const token = generateJWT({ username, email })
-            res.cookie('token', token, { httpOnly: true, maxAge: 604_800_000, secure: true })
+            
+            res.cookie('token', token, { httpOnly: false, maxAge: 604_800_000, secure: true })
+            res.cookie('user', username, { httpOnly: false, maxAge: 604_800_000})
             res.status(201).json({ error: 'false', message: 'User created successfully' });
         })
         .catch((err) => {
@@ -51,6 +53,7 @@ exports.login = (('/login'), async (req, res) => {
                 res.status(404).json({ error: 'true', message: 'User not found' })
                 return
             }
+            const uid = alreadyExist.user_id
             const select = await prisma.user.findUnique({
                 where: {
                     username: username
@@ -70,7 +73,9 @@ exports.login = (('/login'), async (req, res) => {
             }
 
             const token = generateJWT({ username })
-            res.cookie('token', token, { httpOnly: true, maxAge: 604_800_000, secure: true, })
+            res.cookie('token', token, { httpOnly: false, maxAge: 604_800_000})
+            res.cookie('user', username, { httpOnly: false, maxAge: 604_800_000})
+            res.cookie('user', username, { httpOnly: false, maxAge: 604_800_000})
             res.status(200).json({ error: 'false', message: 'Successful login' })
 
         })
@@ -82,6 +87,7 @@ exports.login = (('/login'), async (req, res) => {
 })
 
 exports.logout = (('/'), async (req, res) => {
-    res.cookie('token', '', { maxAge: 10 })
-    res.status(200).json({ error: false, message: 'success' })
+    res.cookie('token', '', { maxAge: 0 })
+    res.cookie('user', '', {maxAge: 0})
+    res.status(200).json({ error: false, message: 'success logout' })
 })

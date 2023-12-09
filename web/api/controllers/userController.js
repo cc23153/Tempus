@@ -21,7 +21,7 @@ const userExistsByUsername = async (username) => {
 }
 
 
-exports.getUser = (('/'), async (req, res) => {
+exports.getUserByUsername = (('/'), async (req, res) => {
     const username = req.body.username
     await getUserSchema.validate({ username })
         .then(async () => {
