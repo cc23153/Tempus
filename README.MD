@@ -20,9 +20,10 @@ O Tempus é uma aplicação web que oferece uma solução para gerenciar tarefas
 
 ### Frontend
 
-1. Abra um novo terminal (separado do terminal da API) e navegue até a pasta `web/frontend`.
+1. Abra um novo terminal (separado do terminal da API) e navegue até a pasta `tempus-frontend/`.
 2. Execute o comando `npm install` para instalar as dependências.
 3. Execute o comando `npm run dev` para iniciar o servidor de desenvolvimento do frontend.
+* O frontend estará rodando por padrão, em http://localhost:5173/
 
 ## Tecnologias Utilizadas
 
@@ -35,6 +36,7 @@ O Tempus é uma aplicação web que oferece uma solução para gerenciar tarefas
 - **Frontend:**
   - Node.js
   - Express.js
+  - Vue.js
   - Outras dependências (verifique o arquivo `package.json`)
 
 ## Contribuição
