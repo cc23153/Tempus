@@ -75,7 +75,6 @@ exports.login = (('/login'), async (req, res) => {
             const token = generateJWT({ username })
             res.cookie('token', token, { httpOnly: false, maxAge: 604_800_000})
             res.cookie('user', username, { httpOnly: false, maxAge: 604_800_000})
-            res.cookie('user', username, { httpOnly: false, maxAge: 604_800_000})
             res.status(200).json({ error: 'false', message: 'Successful login' })
 
         })
