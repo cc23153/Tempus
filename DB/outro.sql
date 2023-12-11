@@ -36,6 +36,8 @@ AS
     FROM [Tempus].[Task] T
     LEFT JOIN [Tempus].[Comment] C ON T.task_id = C.task_id
     GROUP BY T.task_id, T.task_name;
+
+go
 /*Pega os nomes e usernames dos times*/
 CREATE OR ALTER VIEW [Tempus].[UsersByTeam]
 AS
@@ -44,6 +46,8 @@ FROM [Tempus].[Team] T
 INNER JOIN [Tempus].[TeamMembers] TM ON T.team_id = TM.team_id
 INNER JOIN [Tempus].[User] U ON TM.user_id = U.user_id;
 
+
+go
 /* pega as categorias e as tasks concluidas de cada categoria*/
 CREATE OR ALTER VIEW [Tempus].[CompletedTasksByCategory]
 AS
@@ -53,6 +57,7 @@ INNER JOIN [Tempus].[Category] C ON T.task_category = C.category_id
 WHERE T.task_situation = 'Concluída'
 GROUP BY C.category_name;
 
+go
 /* pega o nome task, o nome da categoria e o nome do time selecionado*/
 CREATE OR ALTER VIEW [Tempus].[TasksByUserAndTeam]
 AS 
@@ -63,6 +68,7 @@ INNER JOIN [Tempus].[Team] Te ON W.team_id = Te.team_id
 INNER JOIN [Tempus].[TeamMembers] TM ON Te.team_id = TM.team_id
 INNER JOIN [Tempus].[User] U ON TM.user_id = U.user_id;
 
+go
 /* o nome da categoria, pega o nome task e o nome do time*/
 CREATE OR ALTER VIEW [Tempus].[TasksByCategoryAndTeam]
 AS 
@@ -71,6 +77,8 @@ FROM [Tempus].[Task] T
 INNER JOIN [Tempus].[Category] C ON T.task_category = C.category_id
 INNER JOIN [Tempus].[Workspace] W ON T.workspace_id = W.workspace_id
 INNER JOIN [Tempus].[Team] Te ON W.team_id = Te.team_id;
+
+go
 /* -=-=-=-=-=-=-=-=-=-= TRIGGERS -=-=-=-=-=-=-=-=-=- */
 
 
@@ -180,6 +188,7 @@ BEGIN
     END
 END;
 
+go
 --Mostra a situação da tesk apos a alteração
 CREATE TRIGGER trUpdateTaskSituation
 ON [Tempus].[Task]
