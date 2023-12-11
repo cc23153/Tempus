@@ -1,6 +1,9 @@
 <template>
     <div class="settings-container">
-        <h1>Account Settings</h1>
+        <div class="other-container">
+            <button onclick="document.location='/'"> &lt; </button>
+            <h1>Account Settings</h1>
+        </div>
         <form @submit.prevent="updateSettings">
             <div class="form-group">
                 <label for="username">Username</label>
@@ -30,10 +33,8 @@ const username = document.cookie
     .split("; ")
     .find((row) => row.startsWith("user="))
     ?.split("=")[1];
-const uid = document.cookie
-    .split("; ")
-    .find((row) => row.startsWith("uid="))
-    ?.split("=")[1];
+
+let user_id = null
 
 const userData = ref({
     username: '',
@@ -45,7 +46,7 @@ const userData = ref({
 let originalData = {
     username : userData.value.username,
     nickname : userData.value.nickname,
-    email:userData.value.email,
+    email: userData.value.email,
     password : ''
 }
 
@@ -60,15 +61,20 @@ async function fetchData() {
     });
     const data = await response.json();
     console.log({ data });
-    userData.value.username = data.user.username
-    userData.value.nickname = data.user.nickname
-    userData.value.email = data.user.email
-    userData.value.password = ''
+    user_id = data.user.user_id;
     
-    originalData.username = userData.username,
-    originalData.nickname = userData.nickname,
-    originalData.email = userData.email,
-    originalData.password = ''  // Assumindo que a resposta da API contém os campos username, nickname e email
+    userData.value.username = data.user.username;
+    userData.value.nickname = data.user.nickname;
+    userData.value.email = data.user.email;
+    userData.value.password = '';
+
+
+    originalData.username = data.user.username;
+    originalData.nickname = data.user.nickname;
+    originalData.email = data.user.email;
+    originalData.password = '';  // Assumindo que a resposta da API contém os campos username, nickname e email
+
+    
     console.log(originalData)
 }
 
@@ -78,34 +84,37 @@ onMounted(fetchData);
 
 
 const updateSettings = () => {
-    updateNickname(userData.value.nickname);
-    // if (userData.value.username !== originalData.username) {
-    //     updateUsername(userData.value.username);
-    // }
-    // if (userData.value.nickname !== originalData.nickname) {
-        
-    // }
-    // if (userData.value.email !== originalData.email) {
-    //     updateEmail(userData.value.email);
-    // }
-    // if (userData.value.password) {
-    //     updatePassword(userData.value.password);
-    // }
-    // // Reset the password field after update
+    if (userData.value.username !== originalData.username) {
+        updateUsername(userData.value.username);
+    }
+    if (userData.value.nickname !== originalData.nickname) {
+        updateNickname(userData.value.nickname);
+    }
+    if (userData.value.email !== originalData.email) {
+        updateEmail(userData.value.email);
+    }
+    if (userData.value.password) {
+        updatePassword(userData.value.password);
+    }
+    // Reset the password field after update
     userData.value.password = '';
 };
 
 const updateUsername = async (newUsername) => {
-
+    console.log(user_id)
     const response = await fetch('http://localhost:5050/u/patchusername', {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ uid, newUsername }),
+        body: JSON.stringify({ user_id: user_id, username: newUsername }),
         credentials: 'include',
     })
     const data = await response.json();
+    if(data){
+        document.cookie=`user=${newUsername};max-age=604_800_000;path=/`
+        
+    }
 
 };
 
@@ -116,7 +125,7 @@ const updateNickname = async (newNickname) => {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ uid, newNickname }),
+        body: JSON.stringify({ user_id: user_id, nickname: newNickname }),
         credentials: 'include',
     });
     const data = await response.json();
@@ -129,7 +138,7 @@ const updateEmail = async (newEmail) => {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ uid, newEmail }),
+        body: JSON.stringify({ user_id: user_id, email: newEmail }),
         credentials: 'include',
     });
     const data = await response.json();
@@ -141,7 +150,7 @@ const updatePassword = async (newPassword) => {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ uid, newPassword }),
+        body: JSON.stringify({ user_id: user_id, pwd: newPassword }),
         credentials: 'include',
     });
     const data = await response.json();
@@ -164,10 +173,13 @@ h1 {
     margin-bottom: 15px;
 }
 
+
+
 label {
     display: block;
     margin-bottom: 5px;
 }
+
 
 input[type="text"],
 input[type="email"],
@@ -191,6 +203,21 @@ button {
 
 button:hover {
     background-color: #0056b3;
+}
+
+.other-container {
+    display: flex;  
+    text-align: center;
+}
+
+.other-container button {
+    width: fit-content;
+    margin-top: 5%;
+    margin-bottom:5%;
+}
+
+.other-container h1 {
+    margin: auto;
 }
 </style>
   
