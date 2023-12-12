@@ -60,7 +60,6 @@ async function fetchData() {
         credentials: 'include',
     });
     const data = await response.json();
-    console.log({ data });
     user_id = data.user.user_id;
     
     userData.value.username = data.user.username;
@@ -73,9 +72,6 @@ async function fetchData() {
     originalData.nickname = data.user.nickname;
     originalData.email = data.user.email;
     originalData.password = '';  // Assumindo que a resposta da API contém os campos username, nickname e email
-
-    
-    console.log(originalData)
 }
 
 
