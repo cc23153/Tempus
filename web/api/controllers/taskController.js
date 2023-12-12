@@ -1,6 +1,6 @@
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
-const { getTask, postTask, putTask, deleteTask, patchTaskCategory, patchTaskDescription, patchTaskName, patchTaskSituation, patchTaskEnd } = require('../database/yup/taskSchemas')
+const { getTask, getTaskByWorkspace, postTask, putTask, deleteTask, patchTaskCategory, patchTaskDescription, patchTaskName, patchTaskSituation, patchTaskEnd } = require('../database/yup/taskSchemas')
 
 const taskExist = async (task_id) => {
     const task = await prisma.task.findUnique({
@@ -28,11 +28,11 @@ exports.getTask = (('/'), async (req, res) => {
 exports.getTaskByWorkspace = (('/'), async (req, res) => {
     const workspace_id = req.body.workspace_id
 
-    await getTask.validate({ workspace_id })
+    await getTaskByWorkspace.validate({ workspace_id })
         .then(async () => {
             const task = await prisma.task.findMany({
                 where: {
-                    workspace: workspace_id
+                    workspace_id: workspace_id
                 }
             })
             if (!task) {

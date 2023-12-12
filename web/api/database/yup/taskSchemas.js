@@ -33,6 +33,9 @@ const task_category =  yup.number().positive('task_category must be a positive n
 exports.getTask = yup.object().shape({
     task_id : task_id
 })
+exports.getTaskByWorkspace = yup.object().shape({
+    workspace_id: workspace_id
+})
 
 exports.postTask = yup.object().shape({
     task_name: task_name,
