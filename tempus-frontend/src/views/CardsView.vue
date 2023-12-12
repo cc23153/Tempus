@@ -51,8 +51,8 @@
   </div>
 </template>
   
-  <script setup>
-import { ref } from 'vue'
+<script setup>
+import { ref, onMounted } from 'vue'
 import MainHeader from '../components/MainHeader.vue'
 
 const isMenuVisible = ref(false)
@@ -60,6 +60,41 @@ const isMenuVisible = ref(false)
 const toggleMenu = () => {
   isMenuVisible.value = !isMenuVisible.value
 }
+
+// Função para buscar os quadros da API
+const fetchQuadros = async () => {
+  try {
+    const response = await fetch('http://localhost:5050/ta/taskbyworkspace', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        // Incluir headers de autenticação se necessário
+      },
+      body: JSON.stringify({
+        workspace_id: 1
+      }),
+      credentials: "include"
+    });
+
+    if (response.ok) {
+      console.log(response.body)
+      const data = await response.json();
+      //quadros.value.push(data); // Supondo que a resposta tenha uma propriedade 'quadros'
+      data.forEach(element => {
+        let insert = { titulo: element.task_name, descricao: element.task_content, situacao: element.task_situation, dataInicio: Date(element.task_begin), dataFim: Date(element.task_end), categoria: element.task_category }
+        quadros.value.push(insert)
+      });
+      console.log(quadros.value)
+    } else {
+      console.error('Erro ao buscar quadros:', response.statusText);
+    }
+  } catch (error) {
+    console.error('Erro na requisição:', error.message);
+  }
+};
+
+// Chamada para buscar os quadros quando o componente for montado
+onMounted(fetchQuadros);
 
 const quadros = ref([])
 const titulo = ref('')
@@ -82,7 +117,7 @@ const criarQuadro = () => {
     return
   }
 
-  const novoQuadro = {
+const novoQuadro = {
     titulo: titulo.value,
     descricao: descricao.value,
     situacao: situacao.value,
@@ -140,13 +175,16 @@ const enviarParaAPI = async () => {
 <style scoped>
 .card-container {
   margin-top: 5vh;
-  display: flex; /* Faz com que os cards apareçam lado a lado */
-  gap: 10px; /* Adiciona um espaço de 10px entre os cards */
+  display: flex;
+  /* Faz com que os cards apareçam lado a lado */
+  gap: 10px;
+  /* Adiciona um espaço de 10px entre os cards */
+  flex-wrap: wrap;
 }
 
 .card {
   background-color: white;
-  max-width: 300px;
+  max-width: 275px;
   margin: 0 auto;
   padding: 20px;
   border: 1px solid #ccc;
