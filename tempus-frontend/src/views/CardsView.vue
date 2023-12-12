@@ -77,14 +77,11 @@ const fetchQuadros = async () => {
     });
 
     if (response.ok) {
-      console.log(response.body)
       const data = await response.json();
-      //quadros.value.push(data); // Supondo que a resposta tenha uma propriedade 'quadros'
       data.forEach(element => {
-        let insert = { titulo: element.task_name, descricao: element.task_content, situacao: element.task_situation, dataInicio: Date(element.task_begin), dataFim: Date(element.task_end), categoria: element.task_category }
+        let insert = { titulo: element.task_name, descricao: element.task_content, situacao: element.task_situation, dataInicio: new Date(element.task_begin), dataFim: new Date(element.task_end), categoria: element.task_category }
         quadros.value.push(insert)
       });
-      console.log(quadros.value)
     } else {
       console.error('Erro ao buscar quadros:', response.statusText);
     }
