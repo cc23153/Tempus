@@ -38,7 +38,7 @@
         <p>{{ quadro.dataFim }}</p>
       </div>
       <div class="card">
-        <h1>Task</h1>
+        <h1>New Task</h1>
         <input v-model="titulo" placeholder="Title" />
         <textarea v-model="descricao" placeholder="Description" resizable="false"></textarea>
         <input v-model="situacao" placeholder="Situation" />
@@ -170,6 +170,13 @@ const enviarParaAPI = async () => {
   }
 }
 </script>
+
+<style>
+body{
+  background-image: none;
+  background-color: #2c3e50;
+}
+</style>
 
 
 <style scoped>
