@@ -12,7 +12,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
 
 const corsOptions = {
-  origin: [`http://localhost:${FRONTEND_PORT}`, 'http://localhost:5173'],
+  origin: [`http://localhost:${FRONTEND_PORT}`, 'http://localhost:5173', 'http://localhost:4173'],
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true
 };
