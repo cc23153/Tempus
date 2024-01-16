@@ -42,9 +42,3 @@ O Tempus é uma aplicação web que oferece uma solução para gerenciar tarefas
 ## Contribuição
 
 Contribuições são bem-vindas! Sinta-se à vontade para abrir problemas (issues) e enviar pull requests.
-
-## Contato
-
-- [Pedro Henrique](mailto:zBl4ckDev@protonmail.com)
-- [Ana Clara](mailto:cc23122@g.unicamp.br)
-- [Kauã Victor](mailto:cc23142@g.unicamp.br)
